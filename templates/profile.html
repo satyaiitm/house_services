@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+    <title>Profile</title>
+</head>
+
+<body>
+
+    {% if role == 1 %}
+    <div class="sinreg">
+        <h1>{{details.name}}'s Profile details</h1>
+        <h3>Currently you are registered as a Professional</h3>
+
+
+        <form action="/professional/update_profile/{{details.id}}" method="POST" id="update-professional-profile">
+
+
+
+            <label>User ID:</label>
+            <input type="text" name="uid" value="{{details.uid}}" disabled /> <br>
+
+            <label>Password :</label>
+            <input type="text" name="pwd" value="{{details.pwd}}" /> <br>
+
+            <label>Name of your service :</label>
+            <input type="text" name="pwd" value="{{details.sp.sname}}" disabled /> <br>
+
+            <label>Description of you service :</label>
+            <input type="text" name="pro_descrip" value="{{details.pro_descrip}}" /> <br>
+
+
+            <label>Name:</label>
+            <input type="text" name="name" value="{{details.name}}" required /> <br>
+
+            <label>Phone number:</label>
+            <input type="text" name="phone" value="{{details.phone}}"> <br>
+
+            <label>Address:</label>
+            <input type="text" name="address" value="{{details.address}}"> <br>
+
+            <label>Pin code:</label>
+            <input type="text" name="pincode" value="{{details.pincode}}"> <br>
+
+            <input type="submit" value="Update">
+
+        </form>
+    </div>
+
+
+
+
+    {% endif %}
+
+
+    {% if role == 0 %}
+    <div class="sinreg">
+        <h1>{{details.name}}'s Profile details</h1>
+        <h3>Currently you are registered as a Customer</h3>
+
+        <form action="/customer/update_profile/{{details.id}}" method="POST" id="update-customer-profile">
+
+
+
+            <label>User ID:</label>
+            <input type="text" name="uid" value="{{details.uid}}" disabled /> <br>
+
+            <label>Password :</label>
+            <input type="text" name="pwd" value="{{details.pwd}}" /> <br>
+
+            <label>Name:</label>
+            <input type="text" name="name" value="{{details.name}}" required /> <br>
+
+            <label>Phone number:</label>
+            <input type="text" name="phone" value="{{details.phone}}"> <br>
+
+            <label>Address:</label>
+            <input type="text" name="address" value="{{details.address}}"> <br>
+
+            <label>Pin code:</label>
+            <input type="text" name="pincode" value="{{details.pincode}}"> <br>
+
+            <input type="submit" value="Update">
+
+        </form>
+    </div>
+
+    {% endif %}
+</body>
+
+</html>

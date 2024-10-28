@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Document</title>
+</head>
+
+<body class="container-fluid">
+
+    <!-- <h1>Welcome to Customer</h1>
+
+
+    <div>
+        <a href="/customer/home/{{id}}">Home</a>
+        <a href="/customer/search/{{id}}">Search</a>
+        <a href="/customer/summary/{{id}}">Summary</a>
+        <a href="/">Logout</a>
+    </div> -->
+
+
+    <div class="navbar-brand mb-0 h1">A to Z Household Services</div>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+        <div class="container-fluid">
+
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <span class="navbar-text"> Welcome to Customer |</span>
+
+                    <a class="nav-link" href="/customer/home/{{id}}">Home</a>
+                    <a class="nav-link" href="/customer/search/{{id}}">Search</a>
+                    <a class="nav-link" href="/customer/summary/{{id}}">Summary</a>
+                    <a class="nav-link" href="/">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- -------------------------------------------------------Home page -->
+    {% if page =="home" %}
+
+    <a class="btn btn-info" href="/customer/profile/{{id}}">Profile</a>
+
+
+    <!-- after clicking on a service to book -->
+    {% if recomend|length == 0 %}
+    <div>
+        <h2>are lookinng for?</h2>
+        <form action="/customer/home/{{id}}" method="post">
+            {% for serv in all_service %}
+            <span>
+                <button type="submit" name="showserv" value="{{serv.id}}">{{serv.sname}}</button>
+                <!-- <p>{{serv.description}}</p> -->
+            </span>
+
+
+            {% endfor %}
+        </form>
+    </div>
+    {% else %}
+
+    <!-- <form action="">
+        {% for r in recomend |sort(attribute='service_rating', reverse = True) %}
+        <br>
+        <span>{{r.name}}</span>
+        <a href="/request/book/{{id}}/{{r.id}}/{{r.id}}">book</a>
+
+        {% endfor %}
+
+    </form> -->
+
+    <div class="card" style="width: 50% ;">
+        <div class="card-header">Best {{recomend[0].sp.sname}} packeg for you </div>
+        <ul class="list-group list-group-flush">
+            {% for r in recomend |sort(attribute='service_rating', reverse = True) %}
+            <!-- list of professional , rating decending order -->
+            <li class="list-group-item">
+                <a class="btn btn-primary" href="/request/book/{{id}}/{{r.id}}/{{r.id}}">book</a>
+                <span>{{r.pro_descrip}}</span>
+            </li>
+
+            {% endfor %}
+          
+        </ul>
+    </div>
+
+
+
+    {% endif %}
+
+
+
+
+    <h2>Service History</h2>
+    <table>
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Service Name</th>
+                <th>Professional Name</th>
+                <th>Phome no.</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+            {% for hist in hist %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{hist.ss.sname}}</td>
+                <td>{{hist.pro.name}}</td>
+                <td>{{hist.pro.phone}}</td>
+
+                {% if hist.service_status == "Accepted" %}
+                <td> <a class="btn btn-success" href="/remark/{{hist.id}}">close ?</a></td>
+                {% elif hist.service_status == "Requested" %}
+                <td> <a class="btn btn-danger "
+                        href="/request/cancell/{{hist.cust.id}}/{{hist.pro.id}}/{{hist.id}}">cancell request</a></td>
+                {% else %}
+                <td>{{hist.service_status}}</td>
+                {% endif %}
+
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+
+    </table>
+
+
+    <!-- -------------------------------------------------------search page -->
+    {% elif page =="search" %}
+
+    <h1>Welcome to Customer</h1>
+
+    <form action=""></form>
+    <label for="">Search by :</label>
+    <select name="" id="">
+        {% for serv in all_service %}
+        <option value="">{{serv.sname}}</option>
+        {% endfor %}
+
+    </select>
+
+    <input type="submit" value="Search text">
+    </form>
+
+
+    <!-- -------------------------------------------------------Summary page -->
+    {% elif page =="summary" %}
+    <table >
+        <tr>
+            <th>Rating</th>
+            <th>Service status</th>
+        </tr>
+        
+        <tr>
+            <td> <img src=" {{rating_img}} "></td>
+            <td> <img src="{{status_ing}}"></td>
+        </tr>
+        
+        </table>
+
+    {% endif %}
+</body>
+
+</html>

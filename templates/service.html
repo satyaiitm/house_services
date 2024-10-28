@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New service</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+</head>
+
+<body>
+    <p>new</p>
+    {% if action == "new" %}
+
+    <h1>New service</h1>
+    <form action="/service/new/0" method="POST">
+        <label for="">Service Name :</label>
+        <input type="text" name="sname" id="" required> <br>
+
+        <label for="">Description :</label>
+        <input type="text" name="des" id=""> <br>
+
+        <label for="">Base Price :</label>
+        <input type="text" name="price" id="" required> <br>
+
+        <label for="">Time Required :</label>
+        <input type="text" name="time" id=""> <br>
+
+        <input type="submit" name="act" id="" value="Add">
+        <input type="submit" name="act" id="" value="Cancel">
+
+    </form>
+
+    {% elif action == "edit" %}
+    <form action="/service/edit/{{toedit.id}}" method="POST">
+
+
+        <label for="">Service Name :</label>
+        <input type="text" name="sname" id="" value="{{toedit.sname}}" required> <br>
+
+        <label for="">Description :</label>
+        <input type="text" name="des" id="" value="{{toedit.description}}"> <br>
+
+        <label for="">Base Price :</label>
+        <input type="text" name="price" id="" value="{{toedit.price}}" required> <br>
+
+        <label for="">Time Required :</label>
+        <input type="text" name="time" id="" value="{{toedit.timerequired}}"> <br>
+
+        <input type="submit" name="act" id="" value="Add">
+        <input type="submit" name="act" id="" value="Cancel">
+
+    </form>
+
+    {% endif %}
+
+
+
+
+
+
+</body>
+
+</html>
