@@ -54,7 +54,10 @@ def signup(usertype):
                 db.session.add(user)
                 db.session.commit()
             else:
-                pro = Professional(uid = request.form.get('uid'),pwd = request.form.get('pwd'),phone = request.form.get('phone'),name = request.form.get('name'),date_created = datetime.now(), document = request.form.get('document'), serv = request.form.get('service'),experience = request.form.get('exp'),address = request.form.get('address'), pincode = request.form.get('pin'), pro_descrip =request.form.get('pro_descrip') )
+                document = request.files['document']
+                file_path = f"static/pro_doc/1{document.filename}"
+                document.save(file_path)
+                pro = Professional(uid = request.form.get('uid'),pwd = request.form.get('pwd'),phone = request.form.get('phone'),name = request.form.get('name'),date_created = datetime.now(), document = file_path, serv = request.form.get('service'),experience = request.form.get('exp'),address = request.form.get('address'), pincode = request.form.get('pin'), pro_descrip =request.form.get('pro_descrip') )
                 db.session.add(pro)
                 db.session.commit()
                 user = User(uid = request.form.get('uid'), id = pro.id , role = 1 )
@@ -164,7 +167,7 @@ def adminpages(page):
         return render_template("admin.html",page = page)
     if page == "summary":
         rating_img,status_ing = generate_plot("admin", 0)
-        print(rating_img,status_ing)
+        # print(rating_img,status_ing)
         return render_template("admin.html",page = page,rating_img=rating_img,status_ing=status_ing)
     
 
@@ -197,8 +200,7 @@ def professional(page, id):
         return render_template("professional.html", page = page, id = id)
     elif page == "summary":
         rating_img,status_ing = generate_plot("professional", id)
-        print(rating_img,status_ing)
-        # return redirect(url_for("summary", usertype = "professional", id =id))
+        print(rating_img,status_ing, ' .................. ', id)
         return render_template("professional.html", page = page, id = id,rating_img=rating_img,status_ing=status_ing)
     elif page == "home":
         allreq = Request.query.filter_by(rpro_id = id )
@@ -229,8 +231,8 @@ def customer(page, id):
     
     elif page == "summary":
         rating_img,status_ing = generate_plot("customer", id)
-        print(rating_img,status_ing)
-        return render_template("customer.html", page = page, id = id, rating_img=rating_img,status_ing=status_ing)
+        # print(rating_img,status_ing)
+        return render_template("customer.html", page = page, id = id, rating_img = rating_img,status_ing = status_ing)
     
     elif page == "home":
         
@@ -267,7 +269,7 @@ def servicereq(action,cust,pro,job):
         res = Request.query.filter_by(id = job).first()
         res.service_status = 'Accepted'
         db.session.commit()
-        return redirect(url_for('professional', page = "home" , id = cust))
+        return redirect(url_for('professional', page = "home" , id = pro))
     elif action == "reject":
         res = Request.query.filter_by(id = job).first()
         res.service_status = 'Rejected'

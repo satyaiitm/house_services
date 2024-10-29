@@ -13,16 +13,6 @@
 
 <body class="container-fluid">
 
-    <!-- <h1>Welcome to Customer</h1>
-
-
-    <div>
-        <a href="/customer/home/{{id}}">Home</a>
-        <a href="/customer/search/{{id}}">Search</a>
-        <a href="/customer/summary/{{id}}">Summary</a>
-        <a href="/">Logout</a>
-    </div> -->
-
 
     <div class="navbar-brand mb-0 h1">A to Z Household Services</div>
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
@@ -78,15 +68,7 @@
     </div>
     {% else %}
 
-    <!-- <form action="">
-        {% for r in recomend |sort(attribute='service_rating', reverse = True) %}
-        <br>
-        <span>{{r.name}}</span>
-        <a href="/request/book/{{id}}/{{r.id}}/{{r.id}}">book</a>
-
-        {% endfor %}
-
-    </form> -->
+   
 
     <div class="card" style="width: 50% ;">
         <div class="card-header">Best {{recomend[0].sp.sname}} packeg for you </div>
@@ -179,8 +161,8 @@
         </tr>
         
         <tr>
-            <td> <img src=" {{rating_img}} "></td>
-            <td> <img src="{{status_ing}}"></td>
+            <td> <img src="../{{rating_img}}" alt=" "></td>
+            <td> <img src="../{{status_ing}}" alt=" "></td>
         </tr>
         
         </table>

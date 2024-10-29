@@ -5,39 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>Document</title>
+    <title>Professional</title>
 </head>
 
-<body>
-    <!-- <h1>Welcome to Professional</h1> -->
-
-
-    <!-- <div>
-        <a href="/professional/home/{{id}}">Home</a>
-        <a href="/professional/search/{{id}}">Search</a>
-        <a href="/professional/summary/{{id}}">Summary</a>
-        <a href="/">Logout</a>
-    </div> -->
-
+<body class="container-fluid ">
 
     <div class="navbar-brand mb-0 h1">A to Z Household Services</div>
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
         <div class="container-fluid">
-         
-          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <span class="navbar-text"> Welcome to Professional |</span>
-              
-              <a class="nav-link"  href="/professional/home/{{id}}">Home</a>
-              <a class="nav-link" href="/professional/search/{{id}}">Search</a>
-              <a class="nav-link" href="/professional/summary/{{id}}">Summary</a>
-              <a class="nav-link" href="/">Logout</a>
+
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <span class="navbar-text"> Welcome to Professional |</span>
+
+                    <a class="nav-link" href="/professional/home/{{id}}">Home</a>
+                    <a class="nav-link" href="/professional/search/{{id}}">Search</a>
+                    <a class="nav-link" href="/professional/summary/{{id}}">Summary</a>
+                    <a class="nav-link" href="/">Logout</a>
+                </div>
             </div>
-          </div>
         </div>
-      </nav>
+    </nav>
 
 
 
@@ -64,7 +55,8 @@
             <td>{{n.cust.name}}</td>
             <td>{{n.cust.phone}}</td>
             <td>{{n.cust.address}}, {{n.cust.pincode}}</td>
-            <td><a href="/request/accept/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}">Accept</a> / <a href="/request/reject/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}">Reject</a></td>
+            <td><a href="/request/accept/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}">Accept</a> / <a
+                    href="/request/reject/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}">Reject</a></td>
         </tr>
         {% endfor %}
     </table>
@@ -77,7 +69,7 @@
             <th>Customer Name</th>
             <th>Contact Phone</th>
             <th>Location(with pin code)</th>
-            <th>Date</th>
+            <th>Request Date</th>
             <th>Rating</th>
         </tr>
         {% for a in allreq %}
@@ -86,8 +78,8 @@
             <td>{{a.cust.name}}</td>
             <td>{{a.cust.phone}}</td>
             <td>{{a.cust.address}}, {{a.cust.pincode}}</td>
-            <td></td>
-            <td></td>
+            <td>{{a.date_of_request}}</td>
+            <td>{{a.rating}}</td>
 
         </tr>
         {% endfor %}
@@ -95,7 +87,7 @@
 
     <!-- -------------------------------------------------------search page -->
     {% elif page =="search" %}
-   
+
     <form action="">
         <label for="">Search by :</label>
         <input type="search">
@@ -116,21 +108,21 @@
     </table>
 
     <!-- -------------------------------------------------------Summary page -->
-    {% elif page =="summary" %}
+    {% elif page == "summary" %}
 
-    <table >
+    <table>
         <tr>
             <th>Rating</th>
             <th>Service status</th>
         </tr>
-        
-        <tr>
-            <td> <img src=" {{rating_img}} "></td>
-            <td> <img src="{{status_ing}}"></td>
-        </tr>
-        
-        </table>
 
+        <tr>
+            <td> <img src="../{{rating_img}}" alt=" all rating"></td>
+            <td> <img src="../{{status_ing}}" alt=" job status"></td>
+        </tr>
+
+    </table>
+    <!-- {{rating_img}} -->
 
 
 
