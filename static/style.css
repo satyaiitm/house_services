@@ -8,7 +8,14 @@
     padding: 10px;
     text-align: center;
 }
-
+.joblist {
+  margin: auto;
+  width: 40% !important;
+  border: 3px solid wheat ;
+  border-radius: 20px;
+  padding: 10px;
+  text-align: center;
+}
 
 /* 
 form{
@@ -24,13 +31,13 @@ form{
 input {
     border: 1px solid black;
     border-radius: 7px;
-    margin: 10px;
+    margin: 7px !important;
     padding: 5px 10px;
-    /* width: 100%; */
+    
     justify-items: left;
     justify-content: flex-start;
     
-    /* align-items: center; */
+    
     
   }
   label {

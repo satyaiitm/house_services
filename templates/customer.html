@@ -18,14 +18,14 @@
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
         <div class="container-fluid">
 
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="collapse navbar-collapse">
                 <div class="navbar-nav">
                     <span class="navbar-text"> Welcome to Customer |</span>
 
                     <a class="nav-link" href="/customer/home/{{id}}">Home</a>
                     <a class="nav-link" href="/customer/search/{{id}}">Search</a>
                     <a class="nav-link" href="/customer/summary/{{id}}">Summary</a>
-                    <a class="nav-link" href="/">Logout</a>
+                    <a class="nav-link " href="/">Logout</a>
                 </div>
             </div>
         </div>
@@ -48,30 +48,51 @@
     <!-- -------------------------------------------------------Home page -->
     {% if page =="home" %}
 
-    <a class="btn btn-info" href="/customer/profile/{{id}}">Profile</a>
+    <a class="btn btn-info  " href="/customer/profile/{{id}}">Go to Profile</a>
 
 
     <!-- after clicking on a service to book -->
     {% if recomend|length == 0 %}
-    <div>
-        <h2>are lookinng for?</h2>
-        <form action="/customer/home/{{id}}" method="post">
+    <div class=" container ">
+        <h2>What are lookinng for?</h2>
+        <form class="row row-cols-3 " action="/customer/home/{{id}}" method="post">
             {% for serv in all_service %}
-            <span>
-                <button type="submit" name="showserv" value="{{serv.id}}">{{serv.sname}}</button>
-                <!-- <p>{{serv.description}}</p> -->
-            </span>
+            <!-- <span class="col mb-3  "> -->
+            <!-- <p>{{serv.description}}</p> -->
+            <!-- <button class="btn btn-light btn-lg align-self-center" type="submit" name="showserv" value="{{serv.id}}">{{serv.sname}}</button> -->
+
+            <!-- </span> -->
+
+
+
+            <div class="card col " style="width: 10rem;">
+
+                <div class="card-body">
+                    <h5 class="card-title">{{serv.sname}}</h5>
+                    <p class="card-text">{{serv.description}}</p>
+                    <button class="btn btn-sm btn-info" type="submit" name="showserv" value="{{serv.id}}">Find best
+                        professional</button>
+
+                </div>
+            </div>
+
 
 
             {% endfor %}
         </form>
     </div>
+
+
+
+
     {% else %}
 
-   
 
-    <div class="card" style="width: 50% ;">
-        <div class="card-header">Best {{recomend[0].sp.sname}} packeg for you </div>
+
+
+
+    <div class="card m-3" style="width: 50% ;">
+        <h5 class="card-header">Best {{recomend[0].sp.sname}} packeg for you </h5>
         <ul class="list-group list-group-flush">
             {% for r in recomend |sort(attribute='service_rating', reverse = True) %}
             <!-- list of professional , rating decending order -->
@@ -81,7 +102,7 @@
             </li>
 
             {% endfor %}
-          
+
         </ul>
     </div>
 
@@ -92,7 +113,7 @@
 
 
 
-    <h2>Service History</h2>
+    <h2>Your Service History</h2>
     <table>
         <thead>
 
@@ -154,18 +175,18 @@
 
     <!-- -------------------------------------------------------Summary page -->
     {% elif page =="summary" %}
-    <table >
+    <table>
         <tr>
             <th>Rating</th>
             <th>Service status</th>
         </tr>
-        
+
         <tr>
             <td> <img src="../{{rating_img}}" alt=" "></td>
             <td> <img src="../{{status_ing}}" alt=" "></td>
         </tr>
-        
-        </table>
+
+    </table>
 
     {% endif %}
 </body>

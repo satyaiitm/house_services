@@ -203,10 +203,11 @@ def professional(page, id):
         print(rating_img,status_ing, ' .................. ', id)
         return render_template("professional.html", page = page, id = id,rating_img=rating_img,status_ing=status_ing)
     elif page == "home":
-        allreq = Request.query.filter_by(rpro_id = id )
+        # allreq = Request.query.filter_by(rpro_id = id )
+        ar = db.session.query(Request).filter(Request.rpro_id == id, Request.service_status != 'Requested' ).all()
         newreq = Request.query.filter_by(rpro_id = id , service_status = 'Requested')
         
-        return render_template("professional.html", page = page, id = id , newreq = newreq, allreq = allreq)
+        return render_template("professional.html", page = page, id = id , newreq = newreq, allreq = ar)
     elif page == "profile":
         customer_details = Professional.query.filter_by(id = id).first()
         return render_template("profile.html", id = id, details = customer_details, role = 1)
