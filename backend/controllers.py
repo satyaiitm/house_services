@@ -135,7 +135,6 @@ def generate_plot(usertype, id):
     
     filename1 = f"static/summary_plot/1{usertype}{id}.png"
     plt.savefig(filename1)
-    
     plt.clf()
     plt.ylabel("Frequency")
     plt.xlabel("Request status")
@@ -146,7 +145,23 @@ def generate_plot(usertype, id):
 
     return (filename1,filename2)
 
-
+def search_for_data(table,typedtext='', id=''):
+    if table == "service":
+        print(table,typedtext)
+        found_data = Service.query.filter(Service.sname.ilike(f'%{typedtext}%')).all()
+    elif table == "customer":
+        found_data = Customer.query.filter(Customer.name.ilike(f'%{typedtext}%')).all()
+    elif table == "professional":
+        found_data = Professional.query.filter(Professional.name.ilike(f'%{typedtext}%')).all()
+    elif table == "pincode":
+        found_data = []
+    elif table == "date":
+        found_data = []
+    elif table == "location":
+        found_data = Request.query.filter(Request.rpro_id == id).all()
+    # elif table == "service": 
+    #     found_data = 1
+    return found_data
 
 
 
@@ -156,7 +171,7 @@ def generate_plot(usertype, id):
 # ------------------     
         
 
-@app.route("/admin/<page>")
+@app.route("/admin/<page>", methods = ["GET","POST"])
 def adminpages(page):
     if page == "home":
         all_request = Request.query.all()
@@ -164,10 +179,14 @@ def adminpages(page):
         all_service = Service.query.all()
         return render_template("admin.html",page = page, pro = pro, all_service = all_service, all_request = all_request)
     if page == "search":
-        return render_template("admin.html",page = page)
+        if request.method == "GET":
+            return render_template("admin.html",page = page )
+        table = request.form.get("table") 
+        typedtext = request.form.get("typedtext")
+        found_data = search_for_data(table,typedtext)
+        return render_template("admin.html",page = page , found_data = found_data)
     if page == "summary":
         rating_img,status_ing = generate_plot("admin", 0)
-        # print(rating_img,status_ing)
         return render_template("admin.html",page = page,rating_img=rating_img,status_ing=status_ing)
     
 
@@ -196,17 +215,18 @@ def admin_action(action , id):
 def professional(page, id):
           
     if page == "search":
-        
-        return render_template("professional.html", page = page, id = id)
+        if request.method == "GET":
+            return render_template("professional.html", page = page, id = id)
+        table = request.form.get("table") 
+        typedtext = request.form.get("typedtext")
+        found_data = search_for_data(table,typedtext, id)
+        return render_template("professional.html",page = page ,id = id, found_data = found_data)
     elif page == "summary":
         rating_img,status_ing = generate_plot("professional", id)
-        print(rating_img,status_ing, ' .................. ', id)
         return render_template("professional.html", page = page, id = id,rating_img=rating_img,status_ing=status_ing)
     elif page == "home":
-        # allreq = Request.query.filter_by(rpro_id = id )
         ar = db.session.query(Request).filter(Request.rpro_id == id, Request.service_status != 'Requested' ).all()
         newreq = Request.query.filter_by(rpro_id = id , service_status = 'Requested')
-        
         return render_template("professional.html", page = page, id = id , newreq = newreq, allreq = ar)
     elif page == "profile":
         customer_details = Professional.query.filter_by(id = id).first()
@@ -225,10 +245,14 @@ def professional(page, id):
 
 @app.route("/customer/<page>/<int:id>", methods = ["GET","POST"])
 def customer(page, id):
-    
     if page == "search":
-        all_service = Service.query.all()
-        return render_template("customer.html", page = page, all_service = all_service, id = id)
+        if request.method == "GET":
+            return render_template("customer.html", page = page, id = id)
+        table = request.form.get("table") 
+        typedtext = request.form.get("typedtext")
+        found_data = search_for_data(table,typedtext)
+        return render_template("customer.html",page = page ,id = id, found_data = found_data)
+   
     
     elif page == "summary":
         rating_img,status_ing = generate_plot("customer", id)

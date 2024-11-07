@@ -88,12 +88,31 @@
     <!-- -------------------------------------------------------search page -->
     {% elif page =="search" %}
 
-    <form action="">
-        <label for="">Search by :</label>
-        <input type="search">
-        <input type="submit" value="Search text">
-    </form>
 
+
+    
+    <form action="/professional/search/{{id}}" method="POST">
+        <label>Search by :</label>
+        <select name="table" id="">
+
+            
+            <option value="date">Date</option>
+            <option value="location">Location name</option>
+            <option value="pincode">Pin Code</option>
+            
+
+        </select>
+        <input type="search" name="typedtext" placeholder="Find all">
+        <input type="submit" value="Search">
+    </form>
+    
+    
+    {% if found_data | length == 0%}
+    <p>sorry there no data</p>
+    {% else %}
+    {{found_data}}
+
+    {% endif %}
 
     <h2>Search Results</h2>
     <table>

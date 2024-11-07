@@ -11,7 +11,7 @@
 </head>
 
 <body class="container-fluid ">
-    
+
 
     <div class="navbar-brand mb-0 h1">A to Z Household Services</div>
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
@@ -32,7 +32,7 @@
 
     <!-- -------------------------------------------------------Home page -->
     {% if page == "home" %}
-    
+
     <h2>Service</h2>
     <table>
         <tr>
@@ -99,11 +99,29 @@
     {% elif page == "search" %}
 
 
-    <form action="">
-        <label for="">Search by :</label>
-        <input type="search">
-        <input type="submit" value="Search text">
+
+    <form action="/admin/search" method="POST">
+        <label>Search by :</label>
+        <select name="table" id="">
+
+            <option value="service">Service</option>
+            <option value="customer">Customer</option>
+            <option value="professional">Professional</option>
+            <!-- <option value="pincode">Pin Code</option> -->
+
+
+        </select>
+        <input type="search" name="typedtext" placeholder="*">
+        <input type="submit" value="Search">
     </form>
+    
+
+{% if found_data | length == 0%}
+<p>sorry there no data</p>
+{% else %}
+{{found_data}}
+
+{% endif %}
 
     <h2>Service Requests (closed)</h2>
     <table>
@@ -113,6 +131,7 @@
             <th>Requested Dt</th>
             <th>Status(R/A/C)</th>
         </tr>
+        
     </table>
 
     <!-- -------------------------------------------------------summary page -->
@@ -133,5 +152,3 @@
     {% endif %}
 
 </body>
-
-
