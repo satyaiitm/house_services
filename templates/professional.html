@@ -56,7 +56,7 @@
             <td>{{n.cust.phone}}</td>
             <td>{{n.cust.address}}, {{n.cust.pincode}}</td>
             <td><a href="/request/accept/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}">Accept</a> / <a
-                    href="/request/reject/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}">Reject</a></td>
+                    href="/request/reject/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}" onclick="return confirm('Are you sure you want to Reject?')">Reject</a></td>
         </tr>
         {% endfor %}
     </table>
@@ -136,12 +136,12 @@
         </tr>
 
         <tr>
-            <td> <img src="../{{rating_img}}" alt=" all rating"></td>
-            <td> <img src="../{{status_ing}}" alt=" job status"></td>
+            <td> <img src="/{{rating_img}}" alt=" all rating"></td>
+            <td> <img src="/{{status_ing}}" alt=" job status"></td>
         </tr>
 
     </table>
-    <!-- {{rating_img}} -->
+
 
 
 

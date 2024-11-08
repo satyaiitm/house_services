@@ -33,6 +33,7 @@
     <!-- -------------------------------------------------------Home page -->
     {% if page == "home" %}
 
+
     <h2>Service</h2>
     <table>
         <tr>
@@ -46,15 +47,19 @@
             <td>{{serv.id}}</td>
             <td>{{serv.sname}}</td>
             <td>{{serv.price}}</td>
-            <td> <a href="/service/edit/{{serv.id}}">Edit</a> / <a href="/service/delete/{{serv.id}}">Delete</a>
+            <!-- <td> <a href="/service/edit/{{serv.id}}">Edit</a> / <a href="/service/delete/{{serv.id}}">Delete</a></td> -->
+
+            <td> <a href="/service/edit/{{serv.id}}">Edit</a> / <a href="/service/delete/{{serv.id}}" title="delete"
+                    class="delete" onclick="return confirm('Are you sure you want to delete this service?')">Delete</a>
             </td>
+
         </tr>
         {% endfor %}
 
     </table>
     <a href="/service/new/0" class="btn btn-primary" role="button">+ New Service</a>
 
-    <h2>Professionals</h2>
+    <h2>New Professionals</h2>
     <table>
         <tr>
             <th>ID</th>
@@ -70,7 +75,7 @@
             <td>{{pro.uid}}</td>
             <td>{{pro.experience}}</td>
             <td>{{pro.sp.sname}}</td>
-            <td><a href="{{pro.document}}">View</a></td>
+            <td><a href="/{{pro.document}}" target="_blank">View</a></td>
             <td><a href="/admin/pro_approve/{{pro.id}}">Approve</a> / <a href="/admin/reject/{{pro.id}}">Reject</a> / <a
                     href="/admin/delete/{{pro.id}}">Delete</a></td>
         </tr>
@@ -111,28 +116,63 @@
 
 
         </select>
-        <input type="search" name="typedtext" placeholder="*">
+        <input type="search" name="typedtext" placeholder="Find all">
         <input type="submit" value="Search">
     </form>
-    
 
-{% if found_data | length == 0%}
-<p>sorry there no data</p>
-{% else %}
-{{found_data}}
 
-{% endif %}
+    {% if found_data | length == 0%}
+    <p>sorry there no data</p>
+    {% else %}
+    <!-- {{found_data}} -->
+    {% if table == "professional" %}
 
-    <h2>Service Requests (closed)</h2>
+    <h2>List of all {{table}}</h2>
     <table>
         <tr>
             <th>ID</th>
-            <th>Assigned Professional (if any)</th>
-            <th>Requested Dt</th>
-            <th>Status(R/A/C)</th>
+            <th>Name</th>
+            <th>Service Name</th>
+            <th>Pin Code</th>
+            <th>Rating</th>
         </tr>
-        
+        {% for item in found_data%}
+        <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.sp.sname}}</td>
+            <td>{{item.pincode}}</td>
+
+        </tr>
+        {% endfor %}
     </table>
+    {% else %}
+    <h2>List of all {{table}}</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Pin code</th>
+        </tr>
+        {% for item in found_data%}
+        <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.phone}}</td>
+            <td>{{item.pincode}}</td>
+
+        </tr>
+        {% endfor %}
+
+    {% endif %}
+
+
+
+
+
+    {% endif %}
+
 
     <!-- -------------------------------------------------------summary page -->
     {% elif page == "summary" %}
@@ -144,11 +184,13 @@
 
         <tr>
             <td> <img src="../{{rating_img}}" alt=" "></td>
-            <td> <img src="../{{status_ing}}" alt=" "></td>
+            <td> <img src="/{{status_ing}}" alt=" "></td>
         </tr>
 
     </table>
 
     {% endif %}
+
+
 
 </body>

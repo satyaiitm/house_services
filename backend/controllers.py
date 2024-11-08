@@ -144,7 +144,7 @@ def generate_plot(usertype, id):
     plt.savefig(filename2)
 
     return (filename1,filename2)
-
+#  ------------------------------------- searching function
 def search_for_data(table,typedtext='', id=''):
     if table == "service":
         print(table,typedtext)
@@ -152,7 +152,7 @@ def search_for_data(table,typedtext='', id=''):
     elif table == "customer":
         found_data = Customer.query.filter(Customer.name.ilike(f'%{typedtext}%')).all()
     elif table == "professional":
-        found_data = Professional.query.filter(Professional.name.ilike(f'%{typedtext}%')).all()
+        found_data = Professional.query.filter(Professional.name.ilike(f'%{typedtext}%'), Professional.role == 1).all()
     elif table == "pincode":
         found_data = []
     elif table == "date":
@@ -184,10 +184,10 @@ def adminpages(page):
         table = request.form.get("table") 
         typedtext = request.form.get("typedtext")
         found_data = search_for_data(table,typedtext)
-        return render_template("admin.html",page = page , found_data = found_data)
+        return render_template("admin.html",page = page , found_data = found_data , table = table)
     if page == "summary":
         rating_img,status_ing = generate_plot("admin", 0)
-        return render_template("admin.html",page = page,rating_img=rating_img,status_ing=status_ing)
+        return render_template("admin.html",page = page,rating_img = rating_img, status_ing = status_ing)
     
 
 @app.route("/admin/<action>/<int:id>" )#, methods = ["POST"])
@@ -223,7 +223,7 @@ def professional(page, id):
         return render_template("professional.html",page = page ,id = id, found_data = found_data)
     elif page == "summary":
         rating_img,status_ing = generate_plot("professional", id)
-        return render_template("professional.html", page = page, id = id,rating_img=rating_img,status_ing=status_ing)
+        return render_template("professional.html", page = page, id = id,rating_img = rating_img,status_ing = status_ing)
     elif page == "home":
         ar = db.session.query(Request).filter(Request.rpro_id == id, Request.service_status != 'Requested' ).all()
         newreq = Request.query.filter_by(rpro_id = id , service_status = 'Requested')
@@ -285,7 +285,6 @@ def customer(page, id):
 @app.route("/request/<action>/<int:cust>/<int:pro>/<int:job>") 
 def servicereq(action,cust,pro,job):
     if action == "book":
-        # srv = Service.query.filter_by(sname = job).first()
         req = Request(rservice_id = job ,rcust_id = cust, rpro_id = pro, date_of_request = datetime.now(), service_status = 'Requested')
         db.session.add(req)
         db.session.commit()
@@ -323,65 +322,3 @@ def remark(jobid):
     else:
         return render_template("remark.html",request = jobrequest)
 
-# @app.route("/summary/<usertype>/<int:id>")
-# def summary(usertype, id):
-
-#     rating_count = [0,0,0,0,0]
-#     stars = [1,2,3,4,5]
-    
-#     request_status=[0,0,0]
-#     l=["Closed","Requested","Rejected"]
-
-#     if usertype ==  "admin" :
-#         res = Request.query.all()
-
-#     elif usertype == "professional":
-#         res = Request.query.filter_by(rpro_id = id ).all()
-        
-#     elif usertype == "customer":
-#         res = Request.query.filter_by(rcust_id = id ).all()
-    
-
-
-#     for i in res:
-#         if i.rating > 0:
-#             rating_count[i.rating - 1] += 1
-#         if i.service_status == "Closed":
-#             request_status[0] += 1
-#         elif i.service_status == "Requested":
-#             request_status[1] += 1
-#         elif i.service_status == "Rejected":
-#             request_status[2] += 1
-#     plt.clf()
-#     plt.ylabel("Frequency")
-#     plt.xlabel("Rating")
-#     plt.bar(stars,rating_count)
-    
-#     filename1 = f"static/summary_plot/1{usertype}{id}.png"
-#     plt.savefig(filename1)
-
-  
-
-
-    
-#     plt.clf()
-#     plt.ylabel("Frequency")
-#     plt.xlabel("Request status")
-#     plt.bar(l,request_status)
-    
-#     filename2 = f"static/summary_plot/2{usertype}{id}.png"
-#     plt.savefig(filename2)
-
-#     return (filename1,filename2)
-
-
-
-   
-# if type == "course_id":
-#                 plt.clf()
-#                 plt.ylabel("Frequency")
-#                 plt.xlabel("Marks")
-#                 plt.hist(marks)
-
-#                 plt.savefig("static/summary_plot/hist.png")
-#                 picture = "static/summary_plot/hist.png"

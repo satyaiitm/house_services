@@ -57,12 +57,7 @@
         <h2>What are lookinng for?</h2>
         <form class="row row-cols-3 " action="/customer/home/{{id}}" method="post">
             {% for serv in all_service %}
-            <!-- <span class="col mb-3  "> -->
-            <!-- <p>{{serv.description}}</p> -->
-            <!-- <button class="btn btn-light btn-lg align-self-center" type="submit" name="showserv" value="{{serv.id}}">{{serv.sname}}</button> -->
-
-            <!-- </span> -->
-
+            
 
 
             <div class="card col " style="width: 10rem;">
@@ -139,7 +134,7 @@
                 <td> <a class="btn btn-success" href="/remark/{{hist.id}}">close ?</a></td>
                 {% elif hist.service_status == "Requested" %}
                 <td> <a class="btn btn-danger "
-                        href="/request/cancell/{{hist.cust.id}}/{{hist.pro.id}}/{{hist.id}}">cancell request</a></td>
+                        href="/request/cancell/{{hist.cust.id}}/{{hist.pro.id}}/{{hist.id}}" onclick="return confirm('Are you sure you want cancell this service request?')">cancell request</a></td>
                 {% else %}
                 <td>{{hist.service_status}}</td>
                 {% endif %}
@@ -190,8 +185,8 @@
         </tr>
 
         <tr>
-            <td> <img src="../{{rating_img}}" alt=" "></td>
-            <td> <img src="../{{status_ing}}" alt=" "></td>
+            <td> <img src="/{{rating_img}}" alt=" "></td>
+            <td> <img src="/{{status_ing}}" alt=" "></td>
         </tr>
 
     </table>
