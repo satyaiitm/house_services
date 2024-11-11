@@ -19,17 +19,21 @@ def login():
         check = User.query.filter_by(uid = request.form.get("username")).first()
         if check:
             pro = cus = 0
-            if check.role == 0 or check.role == 1:
-                pro = db.session.query(Professional).filter(Professional.uid == request.form["username"],Professional.pwd == request.form["passw"], Professional.available > -1).first()
+            if check.role == 0:
+                return redirect("/admin/home")
+            elif check.role == 1 :
+                pro = db.session.query(Professional).filter(Professional.uid == request.form["username"], Professional.pwd == request.form["passw"], Professional.available == "Available").first()
+                if pro:
+                    return redirect(url_for('professional', page = "home" , id = check.id))
+                else:
+                    return redirect("/")
+
             elif check.role == 2 :
                 cus = db.session.query(Customer).filter(Customer.uid == request.form["username"],Customer.pwd == request.form["passw"]).first()
-            
-            if pro and check.role == 0 :
-                return redirect("/admin/home")
-            elif pro and check.role == 1 :
-                return redirect(url_for('professional', page = "home" , id = check.id))
-            elif cus and check.role == 2 :
                 return redirect(url_for('customer', page = "home" , id = check.id))
+            else:
+                return redirect("/")
+            
         else:
             return redirect("/")
 
@@ -40,7 +44,7 @@ def login():
 @app.route("/signup/<usertype>", methods = ["GET", "POST"])
 def signup(usertype):
     if request.method == "GET":
-        serv = Service.query.all()
+        serv = Service.query.all() # to let pro choose from the available aervice
         return render_template("signup.html", serv = serv, usertype = usertype)
     else:
 
@@ -54,9 +58,12 @@ def signup(usertype):
                 db.session.add(user)
                 db.session.commit()
             else:
-                document = request.files['document']
-                file_path = f"static/pro_doc/1{document.filename}"
-                document.save(file_path)
+                if request.form.get('document'):
+                    document = request.files['document']
+                    file_path = f"static/pro_doc/{request.form.get('uid')}{document.filename}"
+                    document.save(file_path)
+                else:
+                    file_path=''
                 pro = Professional(uid = request.form.get('uid'),pwd = request.form.get('pwd'),phone = request.form.get('phone'),name = request.form.get('name'),date_created = datetime.now(), document = file_path, serv = request.form.get('service'),experience = request.form.get('exp'),address = request.form.get('address'), pincode = request.form.get('pin'), pro_descrip =request.form.get('pro_descrip') )
                 db.session.add(pro)
                 db.session.commit()
@@ -154,7 +161,7 @@ def search_for_data(table,typedtext='', id=''):
     elif table == "professional":
         found_data = Professional.query.filter(Professional.name.ilike(f'%{typedtext}%'), Professional.role == 1).all()
     elif table == "pincode":
-        found_data = []
+        found_data = Request.query.filter(Request.rpro_id == id,Request.cust.pincode.ilife(f'%{typedtext}%')).all()
     elif table == "date":
         found_data = []
     elif table == "location":
@@ -175,7 +182,7 @@ def search_for_data(table,typedtext='', id=''):
 def adminpages(page):
     if page == "home":
         all_request = Request.query.all()
-        pro = Professional.query.filter_by(available = -1).all()
+        pro = Professional.query.filter_by(available = "Waiting").all()
         all_service = Service.query.all()
         return render_template("admin.html",page = page, pro = pro, all_service = all_service, all_request = all_request)
     if page == "search":
@@ -194,11 +201,17 @@ def adminpages(page):
 def admin_action(action , id):
     if action == "pro_approve":
         pro = Professional.query.filter_by(id = id).first()
-        pro.available = 1
+        pro.available = "Available"
         db.session.commit()
         return redirect("/admin/home")
     elif action == "reject":
         return redirect("/admin/home")
+    elif action == "block":
+        pro  = Professional.query.filter_by(id = id).first()
+        pro.available = "BlocKed"
+        db.session.commit()
+        return redirect("/admin/home")
+        
     elif action == "delete":
         pro  = Professional.query.filter_by(id = id).first()
         user = User.query.filter_by(uid = pro.uid).first()
@@ -261,7 +274,7 @@ def customer(page, id):
     
     elif page == "home":
         
-        recomend = db.session.query(Professional).filter(Professional.serv == request.form.get("showserv"), Professional.available == 1).all()
+        recomend = db.session.query(Professional).filter(Professional.serv == request.form.get("showserv"), Professional.available == "Available").all()
         hist = Request.query.filter_by(rcust_id = id ).all()
         all_service = Service.query.all()
         
@@ -292,6 +305,7 @@ def servicereq(action,cust,pro,job):
     elif action == "accept":
         res = Request.query.filter_by(id = job).first()
         res.service_status = 'Accepted'
+        res.pro.available = "NotAvailable"
         db.session.commit()
         return redirect(url_for('professional', page = "home" , id = pro))
     elif action == "reject":

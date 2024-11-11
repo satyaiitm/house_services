@@ -75,7 +75,9 @@
             <td>{{pro.uid}}</td>
             <td>{{pro.experience}}</td>
             <td>{{pro.sp.sname}}</td>
-            <td><a href="/{{pro.document}}" target="_blank">View</a></td>
+            <td>
+            {% if pro.document == "" %} <span>no document</span>
+            {% else %}<a href="/{{pro.document}}" target="_blank">View</a>{% endif %}</td>
             <td><a href="/admin/pro_approve/{{pro.id}}">Approve</a> / <a href="/admin/reject/{{pro.id}}">Reject</a> / <a
                     href="/admin/delete/{{pro.id}}">Delete</a></td>
         </tr>
@@ -130,21 +132,28 @@
     <h2>List of all {{table}}</h2>
     <table>
         <tr>
-            <th>ID</th>
+            <th>user ID</th>
             <th>Name</th>
             <th>Service Name</th>
             <th>Pin Code</th>
-            <th>Rating</th>
+            <th>Document</th>
+            <th>Action</th>
         </tr>
-        {% for item in found_data%}
+        
+        {% for pro in found_data %}
         <tr>
-            <td>{{item.id}}</td>
-            <td>{{item.name}}</td>
-            <td>{{item.sp.sname}}</td>
-            <td>{{item.pincode}}</td>
-
+            
+            <td>{{pro.uid}}</td>
+            <td>{{pro.name}}</td>
+            <td>{{pro.sp.sname}}</td>
+            <td>{{pro.pincode}}</td>
+            <td><a href="/{{pro.document}}" target="_blank">View</a></td>
+            <td> <a href="/admin/block/{{pro.id}}">Block</a></td>
         </tr>
         {% endfor %}
+
+
+
     </table>
     {% else %}
     <h2>List of all {{table}}</h2>

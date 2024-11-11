@@ -8,8 +8,7 @@ class User(db.Model):
     role = db.Column(db.Integer)
 
 class Request(db.Model):
-    # __tablename__ = "request"
-   
+    
     id = db.Column(db.Integer, primary_key = True) 
     rservice_id = db.Column(db.Integer, db.ForeignKey("service.id"))   # db.ForeignKey(service.service_id , ondelete='CASCADE')
     rcust_id = db.Column(db.Integer, db.ForeignKey("customer.id"))
@@ -37,8 +36,8 @@ class Professional(db.Model):
     address = db.Column(db.String, nullable = True ) #F
     pincode = db.Column(db.Integer, nullable = True ) #F
     role = db.Column(db.Integer, default = 1, nullable = True) #F
-    available = db.Column(db.Integer,default = -1, nullable = True)#Default = -1 # available ->1 , notavailable -> 0 , waiting for aproval -> -1
-    service_rating = db.Column(db.Integer,default = 0, nullable = True) #Default = 0
+    available = db.Column(db.String,default = "Waiting", nullable = True)#
+    service_rating = db.Column(db.Integer,default = 0, nullable = True) #
     pserve = db.relationship("Request", backref = "pro")
     serv = db.Column(db.Integer, db.ForeignKey("service.id"))
     
