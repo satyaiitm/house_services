@@ -22,7 +22,7 @@ def login():
             if check.role == 0:
                 return redirect("/admin/home")
             elif check.role == 1 :
-                pro = db.session.query(Professional).filter(Professional.uid == request.form["username"], Professional.pwd == request.form["passw"], Professional.available == "Available").first()
+                pro = db.session.query(Professional).filter(Professional.uid == request.form["username"], Professional.pwd == request.form["passw"], Professional.available != "Waiting").first()
                 if pro:
                     return redirect(url_for('professional', page = "home" , id = check.id))
                 else:
@@ -154,20 +154,24 @@ def generate_plot(usertype, id):
 #  ------------------------------------- searching function
 def search_for_data(table,typedtext='', id=''):
     if table == "service":
-        print(table,typedtext)
         found_data = Service.query.filter(Service.sname.ilike(f'%{typedtext}%')).all()
     elif table == "customer":
         found_data = Customer.query.filter(Customer.name.ilike(f'%{typedtext}%')).all()
     elif table == "professional":
         found_data = Professional.query.filter(Professional.name.ilike(f'%{typedtext}%'), Professional.role == 1).all()
+    elif table == "proAtPin":
+        found_data = Professional.query.filter(Professional.pincode.ilike(f'%{typedtext}%'), Professional.role == 1).all()
     elif table == "pincode":
-        found_data = Request.query.filter(Request.rpro_id == id,Request.cust.pincode.ilife(f'%{typedtext}%')).all()
+        found_data = Request.query.filter(Request.rpro_id == id).all()
+        if typedtext:
+            found_data = [i for i in found_data if i.cust.pincode == typedtext ]
+
     elif table == "date":
-        found_data = []
+        found_data = Request.query.filter(Request.rpro_id == id,Request.date_of_request.ilike(f'%{typedtext}%')).all()
     elif table == "location":
         found_data = Request.query.filter(Request.rpro_id == id).all()
-    # elif table == "service": 
-    #     found_data = 1
+        if typedtext:
+            found_data = [i for i in found_data if typedtext in i.cust.address]
     return found_data
 
 
@@ -204,15 +208,18 @@ def admin_action(action , id):
         pro.available = "Available"
         db.session.commit()
         return redirect("/admin/home")
-    elif action == "reject":
-        return redirect("/admin/home")
     elif action == "block":
         pro  = Professional.query.filter_by(id = id).first()
-        pro.available = "BlocKed"
+        pro.available = "Blocked"
+        db.session.commit()
+        return redirect("/admin/home")
+    elif action == "unblock":
+        pro  = Professional.query.filter_by(id = id).first()
+        pro.available = "Available"
         db.session.commit()
         return redirect("/admin/home")
         
-    elif action == "delete":
+    elif action == "reject":
         pro  = Professional.query.filter_by(id = id).first()
         user = User.query.filter_by(uid = pro.uid).first()
         db.session.delete(user)
@@ -229,17 +236,18 @@ def professional(page, id):
           
     if page == "search":
         if request.method == "GET":
-            return render_template("professional.html", page = page, id = id)
+            return render_template("professional.html", page = page, id = id , message = '')
         table = request.form.get("table") 
         typedtext = request.form.get("typedtext")
         found_data = search_for_data(table,typedtext, id)
-        return render_template("professional.html",page = page ,id = id, found_data = found_data)
+        return render_template("professional.html",page = page ,id = id, found_data = found_data,table=table, message = "sorry there no data available")
     elif page == "summary":
         rating_img,status_ing = generate_plot("professional", id)
         return render_template("professional.html", page = page, id = id,rating_img = rating_img,status_ing = status_ing)
     elif page == "home":
         ar = db.session.query(Request).filter(Request.rpro_id == id, Request.service_status != 'Requested' ).all()
         newreq = Request.query.filter_by(rpro_id = id , service_status = 'Requested')
+        
         return render_template("professional.html", page = page, id = id , newreq = newreq, allreq = ar)
     elif page == "profile":
         customer_details = Professional.query.filter_by(id = id).first()
@@ -260,16 +268,15 @@ def professional(page, id):
 def customer(page, id):
     if page == "search":
         if request.method == "GET":
-            return render_template("customer.html", page = page, id = id)
+            return render_template("customer.html", page = page, id = id,message = "")
         table = request.form.get("table") 
         typedtext = request.form.get("typedtext")
         found_data = search_for_data(table,typedtext)
-        return render_template("customer.html",page = page ,id = id, found_data = found_data)
+        return render_template("customer.html",page = page ,id = id, found_data = found_data, table = table, message = "sorry there no data")
    
     
     elif page == "summary":
         rating_img,status_ing = generate_plot("customer", id)
-        # print(rating_img,status_ing)
         return render_template("customer.html", page = page, id = id, rating_img = rating_img,status_ing = status_ing)
     
     elif page == "home":
@@ -328,7 +335,7 @@ def remark(jobid):
     if request.method == "POST":
         jobrequest.rating = request.form.get("rating")
         jobrequest.pro.service_rating += int(request.form.get("rating"))
-        print(type(request.form.get("rating")))
+        jobrequest.pro.available = "Available"
         jobrequest.remarks = request.form.get("remark")
         jobrequest.service_status = "Closed"
         db.session.commit()

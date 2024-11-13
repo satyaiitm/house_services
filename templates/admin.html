@@ -34,7 +34,7 @@
     {% if page == "home" %}
 
 
-    <h2>Service</h2>
+    <h2>Available Services</h2>
     <table>
         <tr>
             <th>ID</th>
@@ -47,8 +47,6 @@
             <td>{{serv.id}}</td>
             <td>{{serv.sname}}</td>
             <td>{{serv.price}}</td>
-            <!-- <td> <a href="/service/edit/{{serv.id}}">Edit</a> / <a href="/service/delete/{{serv.id}}">Delete</a></td> -->
-
             <td> <a href="/service/edit/{{serv.id}}">Edit</a> / <a href="/service/delete/{{serv.id}}" title="delete"
                     class="delete" onclick="return confirm('Are you sure you want to delete this service?')">Delete</a>
             </td>
@@ -58,6 +56,8 @@
 
     </table>
     <a href="/service/new/0" class="btn btn-primary" role="button">+ New Service</a>
+
+    {% if pro | length > 0 %}
 
     <h2>New Professionals</h2>
     <table>
@@ -76,13 +76,14 @@
             <td>{{pro.experience}}</td>
             <td>{{pro.sp.sname}}</td>
             <td>
-            {% if pro.document == "" %} <span>no document</span>
-            {% else %}<a href="/{{pro.document}}" target="_blank">View</a>{% endif %}</td>
-            <td><a href="/admin/pro_approve/{{pro.id}}">Approve</a> / <a href="/admin/reject/{{pro.id}}">Reject</a> / <a
-                    href="/admin/delete/{{pro.id}}">Delete</a></td>
+                {% if pro.document == "" %} <span>no document</span>
+                {% else %}<a href="/{{pro.document}}" target="_blank">View</a>{% endif %}</td>
+            <td><a href="/admin/pro_approve/{{pro.id}}">Approve</a> / <a href="/admin/reject/{{pro.id}}">Reject</a></td>
         </tr>
         {% endfor %}
     </table>
+    {% else %}
+    {% endif %}
 
     <h2>Service Requests</h2>
     <table>
@@ -111,10 +112,8 @@
         <label>Search by :</label>
         <select name="table" id="">
 
-            <option value="service">Service</option>
             <option value="customer">Customer</option>
             <option value="professional">Professional</option>
-            <!-- <option value="pincode">Pin Code</option> -->
 
 
         </select>
@@ -136,26 +135,37 @@
             <th>Name</th>
             <th>Service Name</th>
             <th>Pin Code</th>
+            <th>Status</th>
             <th>Document</th>
             <th>Action</th>
         </tr>
-        
-        {% for pro in found_data %}
+
+        {% for pro in found_data | sort(attribute='sp.sname') %}
         <tr>
-            
+
             <td>{{pro.uid}}</td>
             <td>{{pro.name}}</td>
             <td>{{pro.sp.sname}}</td>
             <td>{{pro.pincode}}</td>
-            <td><a href="/{{pro.document}}" target="_blank">View</a></td>
-            <td> <a href="/admin/block/{{pro.id}}">Block</a></td>
+            <td>{{pro.available}}</td>
+            <td>
+                {% if pro.document == "" %} <span>no document</span>
+                {% else %}<a href="/{{pro.document}}" target="_blank">View</a>{% endif %}</td>
+
+
+            <td> {% if pro.available == "Blocked"%}
+                <a href="/admin/unblock/{{pro.id}}">Unblock</a>
+                {% else %}
+                <a href="/admin/block/{{pro.id}}" onclick="return confirm('Do you really need to Block?')">Block</a>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
 
 
 
     </table>
-    {% else %}
+    {% elif table == "customer" %}
     <h2>List of all {{table}}</h2>
     <table>
         <tr>
@@ -164,7 +174,7 @@
             <th>Phone</th>
             <th>Pin code</th>
         </tr>
-        {% for item in found_data%}
+        {% for item in found_data | sort(attribute='pincode') %}
         <tr>
             <td>{{item.id}}</td>
             <td>{{item.name}}</td>
@@ -174,31 +184,51 @@
         </tr>
         {% endfor %}
 
-    {% endif %}
+        {% elif table == "request" %}
+        <h2>List of all {{table}}</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Pin code</th>
+            </tr>
+            {% for item in found_data | sort(attribute='pincode') %}
+            <tr>
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.phone}}</td>
+                <td>{{item.pincode}}</td>
+
+            </tr>
+            {% endfor %}
+
+
+            {% endif %}
 
 
 
 
 
-    {% endif %}
+            {% endif %}
 
 
-    <!-- -------------------------------------------------------summary page -->
-    {% elif page == "summary" %}
-    <table>
-        <tr>
-            <th>Rating</th>
-            <th>Service status</th>
-        </tr>
+            <!-- -------------------------------------------------------summary page -->
+            {% elif page == "summary" %}
+            <table>
+                <tr>
+                    <th>Rating</th>
+                    <th>Service status</th>
+                </tr>
 
-        <tr>
-            <td> <img src="../{{rating_img}}" alt=" "></td>
-            <td> <img src="/{{status_ing}}" alt=" "></td>
-        </tr>
+                <tr>
+                    <td> <img class="img-fluid" src="../{{rating_img}}" alt=" "></td>
+                    <td> <img class="img-fluid" src="/{{status_ing}}" alt=" "></td>
+                </tr>
 
-    </table>
+            </table>
 
-    {% endif %}
+            {% endif %}
 
 
 

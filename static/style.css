@@ -1,4 +1,7 @@
-
+.mytable{
+  width: 70%; 
+  margin:15px auto; 
+}
 
 .sinreg {
     margin: auto;

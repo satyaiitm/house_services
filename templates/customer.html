@@ -41,10 +41,6 @@
 
 
 
-
-
-
-
     <!-- -------------------------------------------------------Home page -->
     {% if page =="home" %}
 
@@ -53,18 +49,18 @@
 
     <!-- after clicking on a service to book -->
     {% if recomend|length == 0 %}
-    <div class=" container ">
+    <div class=" container">
         <h2>What are lookinng for?</h2>
         <form class="row row-cols-3 " action="/customer/home/{{id}}" method="post">
             {% for serv in all_service %}
-            
+
 
 
             <div class="card col " style="width: 10rem;">
 
                 <div class="card-body">
                     <h5 class="card-title">{{serv.sname}}</h5>
-                    <p class="card-text">{{serv.description}}</p>
+                    <p class=" text-info card-text">{{serv.description}}</p>
                     <button class="btn btn-sm btn-info" type="submit" name="showserv" value="{{serv.id}}">Find best
                         professional</button>
 
@@ -86,19 +82,48 @@
 
 
 
-    <div class="card m-3" style="width: 50% ;">
-        <h5 class="card-header">Best {{recomend[0].sp.sname}} packeg for you </h5>
-        <ul class="list-group list-group-flush">
+    <div class="mytable">
+        <h3>Best {{recomend[0].sp.sname}} packeges for you </h3>
+        <!-- {% if recomend | length == 0 %}
+        <p>There is no Available professional for this service , we are Sorry for the inconvenience</p>
+        {% else %} -->
+        <table class="table ">
+            <thead>
+
+
+                <tr>
+                    <th scope="col">Professional's name</th>
+                    <th>Service Description</th>
+                    <th>Total earned point</th>
+                    <th>Base price</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in recomend |sort(attribute='service_rating', reverse = True) %}
+                <tr>
+                    <td>{{r.name}}</td>
+                    <td>{{r.pro_descrip}}</td>
+                    <td>{{r.service_rating}}</td>
+                    <td>{{r.sp.price}}</td>
+                    <td><a class="btn btn-primary" href="/request/book/{{id}}/{{r.id}}/{{r.serv}}">book</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+        <!-- <ul class="list-group list-group-flush">
             {% for r in recomend |sort(attribute='service_rating', reverse = True) %}
-            <!-- list of professional , rating decending order -->
+            
             <li class="list-group-item">
-                <a class="btn btn-primary" href="/request/book/{{id}}/{{r.id}}/{{r.id}}">book</a>
+                <a class="btn btn-primary" href="/request/book/{{id}}/{{r.id}}/{{r.serv}}">book</a>
                 <span>{{r.pro_descrip}}</span>
             </li>
 
             {% endfor %}
 
-        </ul>
+        </ul> -->
+        <!-- {% endif %} -->
     </div>
 
 
@@ -106,74 +131,111 @@
     {% endif %}
 
 
+    <div class="mytable">
+
+        <h3>Your Service History</h3>
+        <table class="table ">
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Service Name</th>
+                    <th>Professional Name</th>
+                    <th>Phome no.</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
 
 
-    <h2>Your Service History</h2>
-    <table>
-        <thead>
+                {% for hist in hist %}
+                <tr>
+                    <td>{{loop.index}}</td>
+                    <td>{{hist.ss.sname}}</td>
+                    <td>{{hist.pro.name}}</td>
+                    <td>{{hist.pro.phone}}</td>
 
-            <tr>
-                <th>ID</th>
-                <th>Service Name</th>
-                <th>Professional Name</th>
-                <th>Phome no.</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-
-
-            {% for hist in hist %}
-            <tr>
-                <td>{{loop.index}}</td>
-                <td>{{hist.ss.sname}}</td>
-                <td>{{hist.pro.name}}</td>
-                <td>{{hist.pro.phone}}</td>
-
-                {% if hist.service_status == "Accepted" %}
-                <td> <a class="btn btn-success" href="/remark/{{hist.id}}">close ?</a></td>
-                {% elif hist.service_status == "Requested" %}
-                <td> <a class="btn btn-danger "
-                        href="/request/cancell/{{hist.cust.id}}/{{hist.pro.id}}/{{hist.id}}" onclick="return confirm('Are you sure you want cancell this service request?')">cancell request</a></td>
-                {% else %}
-                <td>{{hist.service_status}}</td>
-                {% endif %}
+                    {% if hist.service_status == "Accepted" %}
+                    <td> <a class="btn btn-success" href="/remark/{{hist.id}}">close ?</a></td>
+                    {% elif hist.service_status == "Requested" %}
+                    <td> <a class="btn btn-danger " href="/request/cancell/{{hist.cust.id}}/{{hist.pro.id}}/{{hist.id}}"
+                            onclick="return confirm('Are you sure you want cancell this service request?')">cancell
+                            request</a></td>
+                    {% else %}
+                    <td>{{hist.service_status}}</td>
+                    {% endif %}
 
 
-            </tr>
+                </tr>
 
-            {% endfor %}
+                {% endfor %}
 
-        </tbody>
+            </tbody>
 
 
-    </table>
-
+        </table>
+    </div>
 
     <!-- -------------------------------------------------------search page -->
     {% elif page =="search" %}
-
-    {% if found_data | length == 0%}
-    <p>sorry there no data</p>
-    {% else %}
-    {{found_data}}
-
-    {% endif %}
 
     <form action="/customer/search/{{id}}" method="POST">
         <label>Search by :</label>
         <select name="table" id="">
 
             <option value="service">Service</option>
-            <!-- <option value="customer">Customer</option>
-            <option value="professional">Professional</option> -->
-            <option value="pincode">Pin Code</option>
+            <option value="proAtPin">Professional at Pin Code</option>
 
 
         </select>
         <input type="search" name="typedtext" placeholder="Find all">
         <input type="submit" value="Search">
     </form>
+
+    
+    {% if found_data | length == 0%}
+    <!-- <h1><p>sorry there no data</p></h1> -->
+    {{message}}
+    
+    {% else %}
+    {% if table == "service"%}
+    <h2>List of all Services</h2>
+    <table>
+        <tr>
+            <th>Service Name</th>
+            <th>Description</th>
+            <th>Price</th>
+        </tr>
+
+        {% for srvs in found_data | sort(attribute='sname') %}
+        <tr>
+            <td>{{srvs.sname}}</td>
+            <td>{{srvs.description}}</td>
+            <td>{{srvs.price}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% elif table == "proAtPin"%}
+    <h2>List of Professionals available at the pincode</h2>
+    <table>
+        <tr>
+            <th>Name of the professional</th>
+            <th>Service providing</th>
+            <th>Pin code</th>
+        </tr>
+
+        {% for pro in found_data | sort(attribute='pincode') %}
+        <tr>
+            <td>{{pro.name}}</td>
+            <td>{{pro.sp.sname}}</td>
+            <td>{{pro.pincode}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {%endif%}
+    
+
+    {% endif %}
 
 
     <!-- -------------------------------------------------------Summary page -->
@@ -185,8 +247,8 @@
         </tr>
 
         <tr>
-            <td> <img src="/{{rating_img}}" alt=" "></td>
-            <td> <img src="/{{status_ing}}" alt=" "></td>
+            <td> <img class="img-fluid" src="/{{rating_img}}" alt=" "></td>
+            <td> <img class="img-fluid" src="/{{status_ing}}" alt=" "></td>
         </tr>
 
     </table>

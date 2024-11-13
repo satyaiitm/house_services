@@ -32,9 +32,6 @@
 
 
 
-
-
-
     <!-- -------------------------------------------------------Home page -->
     {% if page =="home" %}
 
@@ -108,23 +105,76 @@
     
     
     {% if found_data | length == 0%}
-    <p>sorry there no data</p>
+    
+    {{message}}
+    {% elif table == "date"%}
+    <h2>Date wise list your service histroy</h2>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Customer Name</th>
+            <th>Address</th>
+            <th>Rating</th>
+        </tr>
+
+        {% for srvs in found_data | sort(attribute='sname') %}
+        <tr>
+            <td>{{srvs.date_of_request}}</td>
+            <td>{{srvs.cust.name}}</td>
+            <td>{{srvs.cust.address}},{{srvs.cust.pincode}}</td>
+            <td>{{srvs.rating}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% elif table == "location"%}
+    <h2>Location wise list your service histroy</h2>
+    <table>
+        <tr>
+            <th>Address</th>
+            <th>Customer Name</th>
+            
+            <th>Rating</th>
+        </tr>
+
+        {% for srvs in found_data  %}
+        <tr>
+            <td>{{srvs.cust.address}},{{srvs.cust.pincode}}</td>
+            
+            <td>{{srvs.cust.name}}</td>
+            <td>{{srvs.rating}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% elif table == "pincode"%}
+    <h2>Pincode wise list your service histroy</h2>
+    <table>
+        <tr>
+            <th>Pincode</th>
+            <th>Address</th>
+            <th>Customer Name</th>
+            
+            <th>Rating</th>
+        </tr>
+
+        {% for srvs in found_data  %}
+        <tr>
+            <td>{{srvs.cust.pincode}}</td>
+            <td>{{srvs.cust.address}}</td>
+            
+            <td>{{srvs.cust.name}}</td>
+            <td>{{srvs.rating}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+
+    
     {% else %}
     {{found_data}}
 
     {% endif %}
 
-    <h2>Search Results</h2>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Customer Name</th>
-            <th>Contact Phone</th>
-            <th>Location(with pin code)</th>
-            <th>Date</th>
-            <th>Rating </th>
-        </tr>
-    </table>
+   
 
     <!-- -------------------------------------------------------Summary page -->
     {% elif page == "summary" %}
@@ -136,8 +186,8 @@
         </tr>
 
         <tr>
-            <td> <img src="/{{rating_img}}" alt=" all rating"></td>
-            <td> <img src="/{{status_ing}}" alt=" job status"></td>
+            <td> <img class="img-fluid" src="/{{rating_img}}" alt=" all rating"></td>
+            <td> <img class="img-fluid" src="/{{status_ing}}" alt=" job status"></td>
         </tr>
 
     </table>

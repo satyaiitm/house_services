@@ -43,7 +43,7 @@ class Professional(db.Model):
     
 
 class Customer(db.Model):
-    # __tablename__ = "customer"
+    
     id = db.Column(db.Integer, primary_key = True)
     uid = db.Column(db.String, nullable = False ) #F
     pwd = db.Column(db.String, nullable = False ) #F
@@ -55,7 +55,7 @@ class Customer(db.Model):
 
 
 class Service(db.Model):
-    # __tablename__ = "service"
+    
     id = db.Column(db.Integer, primary_key = True)
     sname = db.Column(db.String, nullable = True ) #F
     price = db.Column(db.Integer, nullable = True ) #F
