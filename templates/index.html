@@ -11,12 +11,26 @@
 </head>
 
 <body >
+
+    
+    
     <div class="sinreg">
         <h1>A to Z Household Services</h1>
+        
+        {% with msg = get_flashed_messages() %}
+        {% if msg %}
+        {% for m in msg %}
+        <div class="alert alert-info text-center">
+            {{m}}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        
+
+
         <div style="text-align: right;">
-            <!-- <a href="/professional/signup/1">Register as professional</a> -->
             <a  href="/signup/professional" >Register as professional</a>
-            
         </div>
         <form action="/" method="POST">
             <label for="">Registered Email ID : </label>
@@ -27,7 +41,6 @@
 
 
         </form>
-        <!-- <a href="/customer/signup/1">Create Account?</a> -->
         <a href="/signup/customer">Create Account?</a>
     </div>
 

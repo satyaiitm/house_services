@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -11,6 +11,8 @@ from flask import current_app as app
 from backend.models import *
 
 
+app.config['SECRET_KEY'] = "secretkeysatya"
+
 @app.route("/", methods = ["GET","POST"] )
 def login():
     if request.method == "GET":
@@ -20,21 +22,27 @@ def login():
         if check:
             pro = cus = 0
             if check.role == 0:
-                return redirect("/admin/home")
+                flash("Welcome to admin")
+                return redirect("/admin/home" )
             elif check.role == 1 :
                 pro = db.session.query(Professional).filter(Professional.uid == request.form["username"], Professional.pwd == request.form["passw"], Professional.available != "Waiting").first()
                 if pro:
+                    flash("You have successfully loged in ")
                     return redirect(url_for('professional', page = "home" , id = check.id))
                 else:
+                    flash("Your request is yet to aproved by the admin, please be patient")
                     return redirect("/")
 
             elif check.role == 2 :
                 cus = db.session.query(Customer).filter(Customer.uid == request.form["username"],Customer.pwd == request.form["passw"]).first()
+                flash("You have successfully loged in ")
                 return redirect(url_for('customer', page = "home" , id = check.id))
             else:
+                flash("Your request is yet to aproved by the admin, please be patient")
                 return redirect("/")
             
         else:
+            flash("User doesnot exist! please register")
             return redirect("/")
 
 
@@ -165,13 +173,17 @@ def search_for_data(table,typedtext='', id=''):
         found_data = Request.query.filter(Request.rpro_id == id).all()
         if typedtext:
             found_data = [i for i in found_data if i.cust.pincode == typedtext ]
-
+    elif table == "request":
+        found_data = Request.query.filter(Request.service_status.ilike(f'%{typedtext}%')).all()
     elif table == "date":
         found_data = Request.query.filter(Request.rpro_id == id,Request.date_of_request.ilike(f'%{typedtext}%')).all()
     elif table == "location":
         found_data = Request.query.filter(Request.rpro_id == id).all()
         if typedtext:
             found_data = [i for i in found_data if typedtext in i.cust.address]
+    
+    if len(found_data)==0:
+        flash("Sorry, no data found")
     return found_data
 
 
@@ -185,6 +197,7 @@ def search_for_data(table,typedtext='', id=''):
 @app.route("/admin/<page>", methods = ["GET","POST"])
 def adminpages(page):
     if page == "home":
+        
         all_request = Request.query.all()
         pro = Professional.query.filter_by(available = "Waiting").all()
         all_service = Service.query.all()
@@ -207,16 +220,19 @@ def admin_action(action , id):
         pro = Professional.query.filter_by(id = id).first()
         pro.available = "Available"
         db.session.commit()
+        flash("Professional has been approved")
         return redirect("/admin/home")
     elif action == "block":
         pro  = Professional.query.filter_by(id = id).first()
         pro.available = "Blocked"
         db.session.commit()
+        flash("Professional has been blocked")
         return redirect("/admin/home")
     elif action == "unblock":
         pro  = Professional.query.filter_by(id = id).first()
         pro.available = "Available"
         db.session.commit()
+        flash("Professional has been unblocked")
         return redirect("/admin/home")
         
     elif action == "reject":
@@ -226,6 +242,7 @@ def admin_action(action , id):
         db.session.commit()
         db.session.delete(pro)
         db.session.commit()
+        flash("You have rejected one request")
         return redirect("/admin/home")
    
 
@@ -240,7 +257,7 @@ def professional(page, id):
         table = request.form.get("table") 
         typedtext = request.form.get("typedtext")
         found_data = search_for_data(table,typedtext, id)
-        return render_template("professional.html",page = page ,id = id, found_data = found_data,table=table, message = "sorry there no data available")
+        return render_template("professional.html",page = page ,id = id, found_data = found_data,table=table)
     elif page == "summary":
         rating_img,status_ing = generate_plot("professional", id)
         return render_template("professional.html", page = page, id = id,rating_img = rating_img,status_ing = status_ing)
@@ -261,6 +278,7 @@ def professional(page, id):
         toupdate.pincode= request.form.get("pincode")
         toupdate.pro_descrip= request.form.get("pro_descrip")
         db.session.commit()
+        flash("Your profile details has been Updated succesfully")
         return redirect(url_for('professional', page = "home" , id = id))
     
 
@@ -279,9 +297,18 @@ def customer(page, id):
         rating_img,status_ing = generate_plot("customer", id)
         return render_template("customer.html", page = page, id = id, rating_img = rating_img,status_ing = status_ing)
     
-    elif page == "home":
+    elif page == "homeshow":
         
         recomend = db.session.query(Professional).filter(Professional.serv == request.form.get("showserv"), Professional.available == "Available").all()
+        hist = Request.query.filter_by(rcust_id = id ).all()
+        all_service = Service.query.all()
+        if len(recomend) == 0 :
+            flash("There is no Professional available for this service , we are Sorry for the inconvenience")
+        return render_template("customer.html", page = page, all_service = all_service, id = id, hist = hist, recomend = recomend)
+    
+    elif page == "home":
+        
+        recomend = ''
         hist = Request.query.filter_by(rcust_id = id ).all()
         all_service = Service.query.all()
         
@@ -300,6 +327,7 @@ def customer(page, id):
         toupdate.pincode= request.form.get("pincode")
         print(toupdate.pwd,toupdate.name,toupdate.phone,toupdate.address,toupdate.pincode)
         db.session.commit()
+        flash("Your profile details has been Updated succesfully")
         return redirect(url_for('customer', page = "home" , id = id))
     
 @app.route("/request/<action>/<int:cust>/<int:pro>/<int:job>") 
@@ -308,6 +336,7 @@ def servicereq(action,cust,pro,job):
         req = Request(rservice_id = job ,rcust_id = cust, rpro_id = pro, date_of_request = datetime.now(), service_status = 'Requested')
         db.session.add(req)
         db.session.commit()
+        flash("You have requested a service")
         return redirect(url_for('customer', page = "home" , id = cust))
     elif action == "accept":
         res = Request.query.filter_by(id = job).first()
@@ -326,6 +355,7 @@ def servicereq(action,cust,pro,job):
         res.service_status = 'Cancelled'
         res.date_of_completion = datetime.now()
         db.session.commit()
+        flash("You have cancelled a service request")
         return redirect(url_for('customer', page = "home" , id = res.cust.id))        
 
 @app.route("/remark/<int:jobid>", methods = ["GET","POST"])
@@ -339,6 +369,7 @@ def remark(jobid):
         jobrequest.remarks = request.form.get("remark")
         jobrequest.service_status = "Closed"
         db.session.commit()
+        flash("Thanks for your feedback! This will help us improve our services.")
         return redirect(url_for('customer', page = "home" , id = jobrequest.cust.id))
     else:
         return render_template("remark.html",request = jobrequest)

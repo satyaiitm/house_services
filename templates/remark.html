@@ -19,22 +19,15 @@
         <h1>Service Remark</h1>
         <h4>Request id : {{request.id}}</h4>
 
-        <!-- <div class="row row-cols-3">
-        <div class="col mb-3">Service name</div>
-        <div class="col mb-3">Description</div>
-        <div class="col mb-3">dd/mm/yyyy</div>
-        <div class="col mb-3">Professional ID</div>
-        <div class="col mb-3">Professional Name</div>
-        <div class="col mb-3">Contact No.</div>
-    </div> -->
+       
 
-        <div class="row row-cols-3 text-info bg-dark">
-            <div class="col mb-3">{{request.ss.sname}}</div>
-            <div class="col mb-3">{{request.ss.description}}</div>
-            <div class="col mb-3">{{request.date_of_request}}</div>
-            <div class="col mb-3">{{request.pro.id}}</div>
-            <div class="col mb-3">{{request.pro.name}}</div>
-            <div class="col mb-3">{{request.pro.phone}}</div>
+        <div class="row row-cols-3 text-white bg-dark">
+            <div class="col mb-3"><span class="fs-5 text-light">Service Name : </span> {{request.ss.sname}}</div>
+            <div class="col mb-3"><span class="fs-5 text-light">Description : </span>{{request.ss.description}}</div>
+            <div class="col mb-3"><span class="fs-5 text-light">Booking date : </span>{{request.date_of_request}}</div>
+            <div class="col mb-3"><span class="fs-5 text-light">Id of the professional : </span>{{request.pro.id}}</div>
+            <div class="col mb-3"><span class="fs-5 text-light">Name of the professional : </span>{{request.pro.name}}</div>
+            <div class="col mb-3"><span class="fs-5 text-light">Phone number : </span>{{request.pro.phone}}</div>
         </div>
 
         <form action="/remark/{{request.id}}" method="POST" id="feedback_form">
@@ -56,16 +49,15 @@
 
 
             <div class=" row mb-3">
-                <label class=" col form-label" for="feedback_comments">Remark (if any) :</label>
+                
+                <label class=" col form-label fs-5" >Remark (if any) :</label>
                 <textarea class="col form-control" name="remark"></textarea>
             </div>
 
 
 
-            <!-- <button type="submit" class="btn btn-success ">Submit</button> -->
             <input type="submit" name="" id="" value="Submit to close">
             <a class="btn btn-danger " href="/customer/home/{{request.cust.id}}">Back</a>
-            <!-- <button type="submit" class="btn btn-danger " >Close</button> -->
         </form>
 
 

@@ -30,12 +30,23 @@
         </div>
     </nav>
 
+{% with msg = get_flashed_messages() %}
+{% if msg %}
+{% for m in msg %}
+<div class="alert alert-info text-center">
+    {{m}}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
     <!-- -------------------------------------------------------Home page -->
     {% if page == "home" %}
 
-
-    <h2>Available Services</h2>
-    <table>
+<div class="mytable">
+    <h2 class=" text-center">Available Services</h2>
+    <table class="table">
         <tr>
             <th>ID</th>
             <th>Service Name.</th>
@@ -55,11 +66,11 @@
         {% endfor %}
 
     </table>
-    <a href="/service/new/0" class="btn btn-primary" role="button">+ New Service</a>
+    <a href="/service/new/0" class="btn btn-primary " role="button">+ New Service</a>
 
     {% if pro | length > 0 %}
 
-    <h2>New Professionals</h2>
+    <h2 class=" text-center">New Professionals</h2>
     <table>
         <tr>
             <th>ID</th>
@@ -85,7 +96,7 @@
     {% else %}
     {% endif %}
 
-    <h2>Service Requests</h2>
+    <h2 class=" text-center">Service Requests</h2>
     <table>
         <tr>
             <th>ID</th>
@@ -93,7 +104,7 @@
             <th>Requested Dt</th>
             <th>Status (R/A/C)</th>
         </tr>
-        {% for r in all_request %}
+        {% for r in all_request | sort(attribute='date_of_request', reverse = True) %}
         <tr>
             <td>{{r.id}}</td>
             <td>{{r.pro.name}}</td>
@@ -102,7 +113,7 @@
         </tr>
         {% endfor %}
     </table>
-
+</div>
     <!-- -------------------------------------------------------search page -->
     {% elif page == "search" %}
 
@@ -114,6 +125,7 @@
 
             <option value="customer">Customer</option>
             <option value="professional">Professional</option>
+            <option value="request">Service request</option>
 
 
         </select>
@@ -121,14 +133,12 @@
         <input type="submit" value="Search">
     </form>
 
-
-    {% if found_data | length == 0%}
-    <p>sorry there no data</p>
-    {% else %}
-    <!-- {{found_data}} -->
+   
+   
+    
     {% if table == "professional" %}
 
-    <h2>List of all {{table}}</h2>
+    <h2 class=" text-center">List of all {{table}}</h2>
     <table>
         <tr>
             <th>user ID</th>
@@ -166,7 +176,7 @@
 
     </table>
     {% elif table == "customer" %}
-    <h2>List of all {{table}}</h2>
+    <h2 class=" text-center">List of all {{table}}</h2>
     <table>
         <tr>
             <th>ID</th>
@@ -185,20 +195,24 @@
         {% endfor %}
 
         {% elif table == "request" %}
-        <h2>List of all {{table}}</h2>
+        <h2 class=" text-center">List of all service {{table}}</h2>
         <table>
             <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Pin code</th>
+                <th>Request id</th>
+                <th>date of request</th>
+                <th>Professional(name)</th>
+                <th>Customer(name)</th>
+                <th>Status</th>
+                <th>Rating</th>
             </tr>
             {% for item in found_data | sort(attribute='pincode') %}
             <tr>
                 <td>{{item.id}}</td>
-                <td>{{item.name}}</td>
-                <td>{{item.phone}}</td>
-                <td>{{item.pincode}}</td>
+                <td>{{item.date_of_request}}</td>
+                <td>{{item.pro.name}}</td>
+                <td>{{item.cust.name}}</td>
+                <td>{{item.service_status}}</td>
+                <td>{{item.rating}}</td>
 
             </tr>
             {% endfor %}
@@ -210,7 +224,7 @@
 
 
 
-            {% endif %}
+           
 
 
             <!-- -------------------------------------------------------summary page -->

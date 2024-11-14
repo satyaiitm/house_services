@@ -30,12 +30,22 @@
         </div>
     </nav>
 
-
+    {% with msg = get_flashed_messages() %}
+    {% if msg %}
+    {% for m in msg %}
+    <div class="alert alert-info text-center">
+        {{m}}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 
     <!-- -------------------------------------------------------Home page -->
     {% if page =="home" %}
+    <div  class=" d-grid  justify-content-md-end">
 
-    <a class="btn btn-info" href="/professional/profile/{{id}}">Profile</a>
+        <a class="btn btn-info" href="/professional/profile/{{id}}">Profile</a>
+    </div>
 
     <h1>Today services</h1>
     <table>
@@ -53,7 +63,8 @@
             <td>{{n.cust.phone}}</td>
             <td>{{n.cust.address}}, {{n.cust.pincode}}</td>
             <td><a href="/request/accept/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}">Accept</a> / <a
-                    href="/request/reject/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}" onclick="return confirm('Are you sure you want to Reject?')">Reject</a></td>
+                    href="/request/reject/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}"
+                    onclick="return confirm('Are you sure you want to Reject?')">Reject</a></td>
         </tr>
         {% endfor %}
     </table>
@@ -87,26 +98,26 @@
 
 
 
-    
+
     <form action="/professional/search/{{id}}" method="POST">
         <label>Search by :</label>
         <select name="table" id="">
 
-            
+
             <option value="date">Date</option>
             <option value="location">Location name</option>
             <option value="pincode">Pin Code</option>
-            
+
 
         </select>
         <input type="search" name="typedtext" placeholder="Find all">
         <input type="submit" value="Search">
     </form>
-    
-    
+
+
     {% if found_data | length == 0%}
-    
-    {{message}}
+
+
     {% elif table == "date"%}
     <h2>Date wise list your service histroy</h2>
     <table>
@@ -132,14 +143,14 @@
         <tr>
             <th>Address</th>
             <th>Customer Name</th>
-            
+
             <th>Rating</th>
         </tr>
 
-        {% for srvs in found_data  %}
+        {% for srvs in found_data %}
         <tr>
             <td>{{srvs.cust.address}},{{srvs.cust.pincode}}</td>
-            
+
             <td>{{srvs.cust.name}}</td>
             <td>{{srvs.rating}}</td>
         </tr>
@@ -152,15 +163,15 @@
             <th>Pincode</th>
             <th>Address</th>
             <th>Customer Name</th>
-            
+
             <th>Rating</th>
         </tr>
 
-        {% for srvs in found_data  %}
+        {% for srvs in found_data %}
         <tr>
             <td>{{srvs.cust.pincode}}</td>
             <td>{{srvs.cust.address}}</td>
-            
+
             <td>{{srvs.cust.name}}</td>
             <td>{{srvs.rating}}</td>
         </tr>
@@ -168,13 +179,13 @@
     </table>
 
 
-    
+
     {% else %}
     {{found_data}}
 
     {% endif %}
 
-   
+
 
     <!-- -------------------------------------------------------Summary page -->
     {% elif page == "summary" %}
