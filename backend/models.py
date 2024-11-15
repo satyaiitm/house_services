@@ -10,34 +10,34 @@ class User(db.Model):
 class Request(db.Model):
     
     id = db.Column(db.Integer, primary_key = True) 
-    rservice_id = db.Column(db.Integer, db.ForeignKey("service.id"))   # db.ForeignKey(service.service_id , ondelete='CASCADE')
+    rservice_id = db.Column(db.Integer, db.ForeignKey("service.id"))   
     rcust_id = db.Column(db.Integer, db.ForeignKey("customer.id"))
     rpro_id = db.Column(db.Integer, db.ForeignKey("professional.id"))
 
-    date_of_request = db.Column(db.Date, nullable = True ) #F
-    date_of_completion = db.Column(db.Date, nullable = True ) #F
-    service_status = db.Column(db.String, nullable = True) #F complete ->0 , approved -> 1 , panding approval -> -1
+    date_of_request = db.Column(db.Date, nullable = False ) 
+    date_of_completion = db.Column(db.Date, nullable = False ) 
+    service_status = db.Column(db.String, nullable = False) 
     remarks = db.Column(db.String) 
-    rating = db.Column(db.Integer, default = 0, nullable = True ) # Default = 0
+    rating = db.Column(db.Integer, default = 0, nullable = False ) 
 
 
 
 class Professional(db.Model):
     
     id = db.Column(db.Integer, primary_key = True)
-    uid = db.Column(db.String, nullable = True ) #F
-    pwd = db.Column(db.String, nullable = True ) #F
-    name = db.Column(db.String, nullable = True ) #F
-    phone = db.Column(db.Integer, nullable = True ) #F
-    date_created = db.Column(db.Date, nullable = True ) #F
-    document = db.Column(db.String, nullable = True ) #F
+    uid = db.Column(db.String, nullable = False ) 
+    pwd = db.Column(db.String, nullable = False )
+    name = db.Column(db.String, nullable = False ) 
+    phone = db.Column(db.Integer, nullable = False ) 
+    date_created = db.Column(db.Date, nullable = True ) 
+    document = db.Column(db.String, nullable = True ) 
     pro_descrip = db.Column(db.String, nullable = True )
-    experience = db.Column(db.Integer, nullable = True ) #F
-    address = db.Column(db.String, nullable = True ) #F
-    pincode = db.Column(db.Integer, nullable = True ) #F
-    role = db.Column(db.Integer, default = 1, nullable = True) #F
-    available = db.Column(db.String,default = "Waiting", nullable = True)#
-    service_rating = db.Column(db.Integer,default = 0, nullable = True) #
+    experience = db.Column(db.Integer, nullable = True )
+    address = db.Column(db.String, nullable = False )
+    pincode = db.Column(db.Integer, nullable = False )
+    role = db.Column(db.Integer, default = 1, nullable = False)
+    available = db.Column(db.String,default = "Waiting", nullable = False)
+    average_rating = db.Column(db.Float,default = 0, nullable = True)
     pserve = db.relationship("Request", backref = "pro")
     serv = db.Column(db.Integer, db.ForeignKey("service.id"))
     
@@ -45,22 +45,22 @@ class Professional(db.Model):
 class Customer(db.Model):
     
     id = db.Column(db.Integer, primary_key = True)
-    uid = db.Column(db.String, nullable = False ) #F
-    pwd = db.Column(db.String, nullable = False ) #F
-    name = db.Column(db.String, nullable = True ) #F
-    phone = db.Column(db.Integer, nullable = True ) #F
-    address = db.Column(db.String, nullable = True ) #F
-    pincode = db.Column(db.Integer, nullable = True ) #F
+    uid = db.Column(db.String, nullable = False ) 
+    pwd = db.Column(db.String, nullable = False ) 
+    name = db.Column(db.String, nullable = False ) 
+    phone = db.Column(db.Integer, nullable = False ) 
+    address = db.Column(db.String, nullable = False ) 
+    pincode = db.Column(db.Integer, nullable = False ) 
     cserve = db.relationship("Request", backref = "cust")
 
 
 class Service(db.Model):
     
     id = db.Column(db.Integer, primary_key = True)
-    sname = db.Column(db.String, nullable = True ) #F
-    price = db.Column(db.Integer, nullable = True ) #F
-    timerequired = db.Column(db.Integer, nullable = True ) #F
-    description = db.Column(db.String, nullable = True ) #F
+    sname = db.Column(db.String, nullable = False ) 
+    price = db.Column(db.Integer, nullable = True ) 
+    timerequired = db.Column(db.Integer, nullable = True ) 
+    description = db.Column(db.String, nullable = True ) 
     servepro = db.relationship("Professional", backref = "sp")
     sserve = db.relationship("Request", backref = "ss")
 

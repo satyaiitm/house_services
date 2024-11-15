@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New service</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
 </head>
 
 <body>
-    <div>
+    <div class="sinreg">
         {% if action == "new" %}
 
         <h1>New service</h1>
@@ -27,9 +30,9 @@
             <input type="text" name="time" id=""> <br>
 
             <input type="submit" name="act" id="" value="Add">
-            <input type="submit" name="act" id="" value="Cancel">
-
+            
         </form>
+        <a class="btn btn-danger" href="/admin/home">back</a>
 
         {% elif action == "edit" %}
         <form action="/service/edit/{{toedit.id}}" method="POST">
@@ -47,7 +50,7 @@
             <label for="">Time Required :</label>
             <input type="text" name="time" id="" value="{{toedit.timerequired}}"> <br>
 
-            <input type="submit" name="act" id="" value="Add">
+            <input type="submit" name="act" id="" value="Update">
             <input type="submit" name="act" id="" value="Cancel">
 
         </form>

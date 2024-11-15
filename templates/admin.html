@@ -199,6 +199,7 @@
         <table>
             <tr>
                 <th>Request id</th>
+                <th>Service</th>
                 <th>date of request</th>
                 <th>Professional(name)</th>
                 <th>Customer(name)</th>
@@ -208,6 +209,7 @@
             {% for item in found_data | sort(attribute='pincode') %}
             <tr>
                 <td>{{item.id}}</td>
+                <td>{{item.ss.sname}}</td>
                 <td>{{item.date_of_request}}</td>
                 <td>{{item.pro.name}}</td>
                 <td>{{item.cust.name}}</td>

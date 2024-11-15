@@ -66,12 +66,16 @@ def signup(usertype):
                 db.session.add(user)
                 db.session.commit()
             else:
-                if request.form.get('document'):
-                    document = request.files['document']
+                
+                
+                document = request.files['document']
+                if document.filename:
                     file_path = f"static/pro_doc/{request.form.get('uid')}{document.filename}"
                     document.save(file_path)
                 else:
-                    file_path=''
+                    file_path = ''
+                
+                
                 pro = Professional(uid = request.form.get('uid'),pwd = request.form.get('pwd'),phone = request.form.get('phone'),name = request.form.get('name'),date_created = datetime.now(), document = file_path, serv = request.form.get('service'),experience = request.form.get('exp'),address = request.form.get('address'), pincode = request.form.get('pin'), pro_descrip =request.form.get('pro_descrip') )
                 db.session.add(pro)
                 db.session.commit()
@@ -333,7 +337,7 @@ def customer(page, id):
 @app.route("/request/<action>/<int:cust>/<int:pro>/<int:job>") 
 def servicereq(action,cust,pro,job):
     if action == "book":
-        req = Request(rservice_id = job ,rcust_id = cust, rpro_id = pro, date_of_request = datetime.now(), service_status = 'Requested')
+        req = Request(rservice_id = job ,rcust_id = cust, rpro_id = pro, date_of_request = datetime.now(), date_of_completion =datetime.now(), service_status = 'Requested')
         db.session.add(req)
         db.session.commit()
         flash("You have requested a service")
@@ -361,10 +365,14 @@ def servicereq(action,cust,pro,job):
 @app.route("/remark/<int:jobid>", methods = ["GET","POST"])
 def remark(jobid):
     jobrequest = Request.query.filter_by(id = jobid).first()
+    projobs = Request.query.filter_by(rpro_id = jobrequest.rpro_id).all()
+    totalrating = 0
+    for i in projobs:
+        totalrating += i.rating
 
     if request.method == "POST":
         jobrequest.rating = request.form.get("rating")
-        jobrequest.pro.service_rating += int(request.form.get("rating"))
+        jobrequest.pro.average_rating = ((totalrating+int(request.form.get("rating")))/len(projobs))
         jobrequest.pro.available = "Available"
         jobrequest.remarks = request.form.get("remark")
         jobrequest.service_status = "Closed"

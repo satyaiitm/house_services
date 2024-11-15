@@ -97,19 +97,19 @@
         <table class="table ">
             <thead>
                 <tr>
-                    <th scope="col">Professional's name</th>
+                    <th >Professional's name</th>
                     <th>Service Description</th>
-                    <th>Total earned point</th>
+                    <th>Average rating</th>
                     <th>Base price</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                {% for r in recomend |sort(attribute='service_rating', reverse = True) %}
+                {% for r in recomend |sort(attribute='average_rating', reverse = True) %}
                 <tr>
                     <td>{{r.name}}</td>
                     <td>{{r.pro_descrip}}</td>
-                    <td>{{r.service_rating}}</td>
+                    <td>{{r.average_rating}}</td>
                     <td>{{r.sp.price}}</td>
                     <td><a class="btn btn-primary" href="/request/book/{{id}}/{{r.id}}/{{r.serv}}">book</a></td>
                 </tr>
@@ -133,6 +133,7 @@
 
                 <tr>
                     <th>ID</th>
+                    <th>Booking date</th>
                     <th>Service Name</th>
                     <th>Professional Name</th>
                     <th>Phome no.</th>
@@ -142,9 +143,10 @@
             <tbody>
 
 
-                {% for hist in hist %}
+                {% for hist in hist |sort(attribute='date_of_request', reverse = True) %}
                 <tr>
                     <td>{{loop.index}}</td>
+                    <td>{{hist.date_of_request}}</td>
                     <td>{{hist.ss.sname}}</td>
                     <td>{{hist.pro.name}}</td>
                     <td>{{hist.pro.phone}}</td>

@@ -19,22 +19,22 @@
         <h1>Customer Signup</h1>
         <form action="/signup/customer" method="POST">
             <label for="">Email ID(Username) :</label>
-            <input type="text" name="username" id=""> <br>
+            <input type="text" name="username" id="" required> <br>
 
             <label for="">Password :</label>
-            <input type="password" name="passw" id=""> <br>
+            <input type="password" name="passw" id="" required> <br>
 
             <label for="">Fullname :</label>
-            <input type="text" name="name" id=""> <br>
+            <input type="text" name="name" id="" required> <br>
 
             <label for="">Phone number :</label>
-            <input type="text" name="phone" id=""> <br>
+            <input type="text" name="phone" id="" required> <br>
 
             <label for=""> Address :</label>
-            <textarea name="address" id=""></textarea> <br>
+            <textarea name="address" id="" required></textarea> <br>
 
             <label for="">Pin Code:</label>
-            <input type="text" name="pin" id=""> <br>
+            <input type="text" name="pin" id="" required> <br>
 
             <input type="submit" name="" id="" value="Register">
         </form>
@@ -47,20 +47,19 @@
         <h1>Service Professional Signup</h1>
         <form action="/signup/professional" method="POST" enctype="multipart/form-data">
             <label for="">Email ID(Username) :</label>
-            <input type="text" name="uid" id=""> <br>
+            <input type="text" name="uid" id="" required> <br>
 
             <label for="">Password :</label>
-            <input type="password" name="pwd" id=""> <br>
+            <input type="password" name="pwd" id="" required> <br>
 
             <label for="">Fullname :</label>
-            <input type="text" name="name" id=""> <br>
+            <input type="text" name="name" id="" required> <br>
 
             <label for="">Phone number :</label>
-            <input type="text" name="phone" id=""> <br>
+            <input type="text" name="phone" id="" required> <br>
 
             <label for="">Service Name :</label>
-            <!-- <input type="text" name="" id=""> <br> -->
-            <select name="service" id="">
+            <select name="service" id="" required>
                 {% for s in serv %}
                 <option value="{{s["id"]}}">{{s["sname"]}}</option>
                 {% endfor %}
@@ -72,15 +71,15 @@
             <label for="">Experience (in yrs) :</label>
             <input type="text" name="exp" id=""> <br>
 
-            <label for=""> <span>Attach documents :</span> <br> <span>(single pdf)</span> </label>
+            <label for=""> <span>Attach document :</span> <br> <span>(single pdf)</span> </label>
             <input type="file" name="document" id=""> <br>
 
             <label for=""> Address :</label>
-            <textarea rows="5" cols="21" name="address" id=""></textarea> <br>
+            <textarea rows="5" cols="21" name="address" id="" required></textarea> <br>
 
 
             <label for="">Pin Code:</label>
-            <input type="text" name="pin" id=""> <br>
+            <input type="text" name="pin" id="" required> <br>
 
             <input type="submit" name="" id="" value="Register">
         </form>
