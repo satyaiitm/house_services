@@ -24,75 +24,98 @@
                     <a class="nav-link" href="/professional/home/{{id}}">Home</a>
                     <a class="nav-link" href="/professional/search/{{id}}">Search</a>
                     <a class="nav-link" href="/professional/summary/{{id}}">Summary</a>
-                    <a class="nav-link" href="/">Logout</a>
+                    <a class="nav-link" href="/logoout">Logout</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    {% with msg = get_flashed_messages() %}
+    {% with msg = get_flashed_messages(with_categories = true) %}
     {% if msg %}
-    {% for m in msg %}
+    {% for category, m in msg %}
+    
+    {% if category == "success"%}
+    <div class="alert alert-success text-center">
+        {{m}}
+    </div>
+    {% elif category == "info" %}
     <div class="alert alert-info text-center">
         {{m}}
     </div>
+    {% elif category == "danger" %}
+    <div class="alert alert-danger text-center">
+        {{m}}
+    </div>
+    {% endif%}
     {% endfor %}
     {% endif %}
     {% endwith %}
 
+
     <!-- -------------------------------------------------------Home page -->
     {% if page =="home" %}
-    <div  class=" d-grid  justify-content-md-end">
 
-        <a class="btn btn-info" href="/professional/profile/{{id}}">Profile</a>
+    <div class="mytable">
+
+        {% if rating == "Blocked" %}
+        <div class="alert  text-center text-danger">
+            <h3>You have been Blocked by the Admin</h3>
+            <p>that means you can not get any job request</p>
+        </div>
+        {% else %}
+        <div class=" d-grid  justify-content-md-end">
+
+            <span> Your Average Rating : <span class="badge bg-success m-1 fs-4">{{rating}}</span> </span>
+            <a class="btn btn-info" href="/professional/profile/{{id}}">Profile</a>
+        </div>
+        {% endif %}
+
+        <h2>Today services</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Customer Name</th>
+                <th>Contact Phone</th>
+                <th>Location(with pin code)</th>
+                <th>Action</th>
+            </tr>
+            {% for n in newreq %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{n.cust.name}}</td>
+                <td>{{n.cust.phone}}</td>
+                <td>{{n.cust.address}}, {{n.cust.pincode}}</td>
+                <td><a class="btn btn-success btn-sm" href="/request/accept/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}">Accept</a> 
+                     <a class="btn btn-danger btn-sm" href="/request/reject/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}"
+                        onclick="return confirm('Are you sure you want to Reject?')">Reject</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <br><br>
+        <h2>Your services history</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Customer Name</th>
+                <th>Contact Phone</th>
+                <th>Location(with pin code)</th>
+                <th>Request Date</th>
+                <th>Rating</th>
+            </tr>
+            {% for a in allreq %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{a.cust.name}}</td>
+                <td>{{a.cust.phone}}</td>
+                <td>{{a.cust.address}}, {{a.cust.pincode}}</td>
+                <td>{{a.date_of_request}}</td>
+                <td>{{a.rating}}</td>
+
+            </tr>
+            {% endfor %}
+        </table>
     </div>
-
-    <h1>Today services</h1>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Customer Name</th>
-            <th>Contact Phone</th>
-            <th>Location(with pin code)</th>
-            <th>Action</th>
-        </tr>
-        {% for n in newreq %}
-        <tr>
-            <td>{{loop.index}}</td>
-            <td>{{n.cust.name}}</td>
-            <td>{{n.cust.phone}}</td>
-            <td>{{n.cust.address}}, {{n.cust.pincode}}</td>
-            <td><a href="/request/accept/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}">Accept</a> / <a
-                    href="/request/reject/{{n.rcust_id}}/{{n.rpro_id}}/{{n.id}}"
-                    onclick="return confirm('Are you sure you want to Reject?')">Reject</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-
-
-    <h1>Closed / all services</h1>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Customer Name</th>
-            <th>Contact Phone</th>
-            <th>Location(with pin code)</th>
-            <th>Request Date</th>
-            <th>Rating</th>
-        </tr>
-        {% for a in allreq %}
-        <tr>
-            <td>{{loop.index}}</td>
-            <td>{{a.cust.name}}</td>
-            <td>{{a.cust.phone}}</td>
-            <td>{{a.cust.address}}, {{a.cust.pincode}}</td>
-            <td>{{a.date_of_request}}</td>
-            <td>{{a.rating}}</td>
-
-        </tr>
-        {% endfor %}
-    </table>
-
     <!-- -------------------------------------------------------search page -->
     {% elif page =="search" %}
 

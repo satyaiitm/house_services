@@ -25,7 +25,7 @@
                     <a class="nav-link" href="/customer/home/{{id}}">Home</a>
                     <a class="nav-link" href="/customer/search/{{id}}">Search</a>
                     <a class="nav-link" href="/customer/summary/{{id}}">Summary</a>
-                    <a class="nav-link " href="/">Logout</a>
+                    <a class="nav-link " href="/logoout">Logout</a>
                 </div>
             </div>
         </div>
@@ -34,27 +34,46 @@
 
 
 
-    {% with msg = get_flashed_messages() %}
+    {% with msg = get_flashed_messages(with_categories = true) %}
     {% if msg %}
-    {% for m in msg %}
+    {% for category, m in msg %}
+    
+    {% if category == "success"%}
+    <div class="alert alert-success text-center">
+        {{m}}
+    </div>
+    {% elif category == "info" %}
     <div class="alert alert-info text-center">
         {{m}}
     </div>
+    {% elif category == "danger" %}
+    <div class="alert alert-danger text-center">
+        {{m}}
+    </div>
+    {% endif%}
     {% endfor %}
     {% endif %}
     {% endwith %}
 
 
 
-
     <!-- -------------------------------------------------------Home page -->
     {% if page =="home" or page =="homeshow" %}
 
-    <div class=" d-grid  justify-content-md-end">
+    {% if available == "Blocked" %}
+        <div class="alert  text-center text-danger">
+            <h3>You have been Blocked by the Admin</h3>
+            <p>that means you can not book any service</p>
+        </div>
+        {% else %}
+       
+        
+
+    <div class=" mytable  d-grid  justify-content-md-end">
 
         <a class="btn btn-info m-1  " href="/customer/profile/{{id}}">Go to Profile</a>
     </div>
-
+    {% endif %}
 
     <!-- to show available service for booking -->
     {% if recomend|length == 0 %}
@@ -76,11 +95,11 @@
                 </div>
             </div>
 
-
-
+            
             {% endfor %}
         </form>
     </div>
+    
 
 
 
@@ -172,6 +191,15 @@
         </table>
     </div>
 
+     <!-- -------------------------------------------------------Blocked page -->
+    {% elif page =="Blocked" %}
+
+    
+        <div class="alert  text-center text-danger">
+            <h2>You have been Blocked by the Admin</h2>
+            <p>that means you can not book any service</p>
+        </div>
+        
     <!-- -------------------------------------------------------search page -->
     {% elif page =="search" %}
 
@@ -195,21 +223,61 @@
     {% else %}
     {% if table == "service"%}
     <h2>List of all Services</h2>
+
+    <form class="row row-cols-3 " action="/customer/homeshow/{{id}}" method="post">
+       
+
+        <table >
+            <tr>
+                <th>Service Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+    
+            {% for srvs in found_data | sort(attribute='sname') %}
+            <tr>
+                <td>{{srvs.sname}}</td>
+                <td>{{srvs.description}}</td>
+                <td>{{srvs.price}}</td>
+                <!-- <td><a href="/customer/homeshow/{{srvs.id}}">Find Service Providers</a></td> -->
+                <td><button class="btn btn-sm btn-info" type="submit" name="showserv" value="{{srvs.id}}">Find best
+                    professional</button></td>
+            </tr>
+            {% endfor %}
+        </table>
+
+
+    </form>
+
+
+
+
+
+
+
+
+<!-- 
     <table>
         <tr>
             <th>Service Name</th>
             <th>Description</th>
             <th>Price</th>
+            <th>Action</th>
         </tr>
 
-        {% for srvs in found_data | sort(attribute='sname') %}
+        {% for srvs in found_data1 | sort(attribute='sname') %}
         <tr>
             <td>{{srvs.sname}}</td>
             <td>{{srvs.description}}</td>
             <td>{{srvs.price}}</td>
+            <td><a href="/customer/homeshow/{{id}}">Find Service Providers</a></td>
         </tr>
         {% endfor %}
-    </table>
+    </table> -->
+
+
+
     {% elif table == "proAtPin"%}
     <h2>List of Professionals available at the pincode</h2>
     <table>

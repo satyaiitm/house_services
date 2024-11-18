@@ -18,12 +18,23 @@
         <h1>A to Z Household Services</h1>
         <h5>Quality services to make your home shine.</h5>
         
-        {% with msg = get_flashed_messages() %}
+        {% with msg = get_flashed_messages(with_categories = true) %}
         {% if msg %}
-        {% for m in msg %}
+        {% for category, m in msg %}
+        
+        {% if category == "success" %}
+        <div class="alert alert-success text-center">
+            {{m}}
+        </div>
+        {% elif category == "info" %}
         <div class="alert alert-info text-center">
             {{m}}
         </div>
+        {% elif category == "danger" %}
+        <div class="alert alert-danger text-center">
+            {{m}}
+        </div>
+        {% endif%}
         {% endfor %}
         {% endif %}
         {% endwith %}

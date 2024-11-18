@@ -15,7 +15,7 @@ class Request(db.Model):
     rpro_id = db.Column(db.Integer, db.ForeignKey("professional.id"))
 
     date_of_request = db.Column(db.Date, nullable = False ) 
-    date_of_completion = db.Column(db.Date, nullable = False ) 
+    date_of_completion = db.Column(db.Date, nullable = True ) 
     service_status = db.Column(db.String, nullable = False) 
     remarks = db.Column(db.String) 
     rating = db.Column(db.Integer, default = 0, nullable = False ) 
@@ -51,6 +51,7 @@ class Customer(db.Model):
     phone = db.Column(db.Integer, nullable = False ) 
     address = db.Column(db.String, nullable = False ) 
     pincode = db.Column(db.Integer, nullable = False ) 
+    available = db.Column(db.String, default = "Available", nullable = False)
     cserve = db.relationship("Request", backref = "cust")
 
 

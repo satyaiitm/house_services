@@ -24,96 +24,118 @@
                     <a class="nav-link" aria-current="page" href="/admin/home">Home</a>
                     <a class="nav-link" href="/admin/search">Search</a>
                     <a class="nav-link" href="/admin/summary">Summary</a>
-                    <a class="nav-link" href="/">Logout</a>
+                    <a class="nav-link" href="/logoout">Logout</a>
                 </div>
             </div>
         </div>
     </nav>
 
-{% with msg = get_flashed_messages() %}
-{% if msg %}
-{% for m in msg %}
-<div class="alert alert-info text-center">
-    {{m}}
-</div>
-{% endfor %}
-{% endif %}
-{% endwith %}
+    {% with msg = get_flashed_messages(with_categories = true) %}
+    {% if msg %}
+    {% for category, m in msg %}
+
+    {% if category == "success"%}
+    <div class="alert alert-success text-center">
+        {{m}}
+    </div>
+    {% elif category == "info" %}
+    <div class="alert alert-info text-center">
+        {{m}}
+    </div>
+    {% elif category == "denger" %}
+    <div class="alert alert-denger text-center">
+        {{m}}
+    </div>
+    {% endif%}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 
 
     <!-- -------------------------------------------------------Home page -->
     {% if page == "home" %}
 
-<div class="mytable">
-    <h2 class=" text-center">Available Services</h2>
-    <table class="table">
-        <tr>
-            <th>ID</th>
-            <th>Service Name.</th>
-            <th>Base Price. </th>
-            <th>Action</th>
-        </tr>
-        {% for serv in all_service %}
-        <tr>
-            <td>{{serv.id}}</td>
-            <td>{{serv.sname}}</td>
-            <td>{{serv.price}}</td>
-            <td> <a href="/service/edit/{{serv.id}}">Edit</a> / <a href="/service/delete/{{serv.id}}" title="delete"
-                    class="delete" onclick="return confirm('Are you sure you want to delete this service?')">Delete</a>
-            </td>
+    <div class="mytable">
+        <h2 class=" text-center">Available Services</h2>
+        <table class="table">
+            <tr>
+                <th>ID</th>
+                <th>Service Name.</th>
+                <th>Base Price. </th>
+                <th>Action</th>
+            </tr>
+            {% for serv in all_service %}
+            <tr>
+                <td>{{serv.id}}</td>
+                <td>{{serv.sname}}</td>
+                <td>{{serv.price}}</td>
+                <td> <a href="/service/edit/{{serv.id}}">Edit</a> / <a href="/service/delete/{{serv.id}}" title="delete"
+                        class="delete"
+                        onclick="return confirm('Are you sure you want to delete this service?')">Delete</a>
+                </td>
 
-        </tr>
-        {% endfor %}
+            </tr>
+            {% endfor %}
 
-    </table>
-    <a href="/service/new/0" class="btn btn-primary " role="button">+ New Service</a>
+        </table>
+        <a href="/service/new/0" class="btn btn-primary " role="button">+ New Service</a>
 
-    {% if pro | length > 0 %}
+        {% if pro | length > 0 %}
 
-    <h2 class=" text-center">New Professionals</h2>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Experience(Yrs)</th>
-            <th>Service Name</th>
-            <th>Uploaded Document</th>
-            <th>Action</th>
-        </tr>
-        {% for pro in pro %}
-        <tr>
-            <td>{{pro.id}}</td>
-            <td>{{pro.uid}}</td>
-            <td>{{pro.experience}}</td>
-            <td>{{pro.sp.sname}}</td>
-            <td>
-                {% if pro.document == "" %} <span>no document</span>
-                {% else %}<a href="/{{pro.document}}" target="_blank">View</a>{% endif %}</td>
-            <td><a href="/admin/pro_approve/{{pro.id}}">Approve</a> / <a href="/admin/reject/{{pro.id}}">Reject</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    {% endif %}
+        <h2 class=" text-center">New Professionals</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Experience(Yrs)</th>
+                <th>Service Name</th>
+                <th>Uploaded Document</th>
+                <th>Action</th>
+            </tr>
+            {% for pro in pro %}
+            <tr>
+                <td>{{pro.id}}</td>
+                <td>{{pro.uid}}</td>
+                <td>{{pro.experience}}</td>
+                <td>{{pro.sp.sname}}</td>
+                <td>
+                    {% if pro.document == "" %} <span>no document</span>
+                    {% else %}<a href="/{{pro.document}}" target="_blank">View</a>{% endif %}</td>
+                <td><a href="/admin/pro_approve/{{pro.id}}">Approve</a> / <a href="/admin/reject/{{pro.id}}">Reject</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        {% endif %}
 
-    <h2 class=" text-center">Service Requests</h2>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Assigned Professional(if any)</th>
-            <th>Requested Dt</th>
-            <th>Status (R/A/C)</th>
-        </tr>
-        {% for r in all_request | sort(attribute='date_of_request', reverse = True) %}
-        <tr>
-            <td>{{r.id}}</td>
-            <td>{{r.pro.name}}</td>
-            <td>{{r.date_of_request}}</td>
-            <td>{{r.service_status}}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+        <h2 class=" text-center">Service Requests</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Assigned Professional</th>
+                <th>Requesting customer</th>
+                <th>Requested Dt</th>
+                <th>Status (R/A/C)</th>
+            </tr>
+            {% for r in all_request | sort(attribute='date_of_request', reverse = True) %}
+            <tr>
+                <td>{{r.id}}</td>
+                {% if not r.pro.name %}
+                <td><a class="btn btn-info" href="/admin/jobdetails/{{r.id}}">Assign new pro</a> </td>
+                {% else %}
+                <td>{{r.pro.name}} </td>
+
+
+
+                {% endif %}
+                <td>{{r.cust.name}}</td>
+                <td>{{r.date_of_request}}</td>
+                <td>{{r.service_status}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
     <!-- -------------------------------------------------------search page -->
     {% elif page == "search" %}
 
@@ -133,9 +155,9 @@
         <input type="submit" value="Search">
     </form>
 
-   
-   
-    
+
+
+
     {% if table == "professional" %}
 
     <h2 class=" text-center">List of all {{table}}</h2>
@@ -183,13 +205,21 @@
             <th>Name</th>
             <th>Phone</th>
             <th>Pin code</th>
+            <th>Action</th>
         </tr>
-        {% for item in found_data | sort(attribute='pincode') %}
+        {% for cust in found_data | sort(attribute='pincode') %}
         <tr>
-            <td>{{item.id}}</td>
-            <td>{{item.name}}</td>
-            <td>{{item.phone}}</td>
-            <td>{{item.pincode}}</td>
+            <td>{{cust.id}}</td>
+            <td>{{cust.name}}</td>
+            <td>{{cust.phone}}</td>
+            <td>{{cust.pincode}}</td>
+            <td> {% if cust.available == "Blocked"%}
+                <a href="/admin/cust_unblock/{{cust.id}}">Unblock</a>
+                {% else %}
+                <a href="/admin/cust_block/{{cust.id}}"
+                    onclick="return confirm('Do you really need to Block?')">Block</a>
+                {% endif %}
+            </td>
 
         </tr>
         {% endfor %}
@@ -226,7 +256,7 @@
 
 
 
-           
+
 
 
             <!-- -------------------------------------------------------summary page -->
@@ -243,6 +273,38 @@
                 </tr>
 
             </table>
+            <!-- -------------------------------------------------------job modify page -->
+            {% elif page == "jobdetails" %}
+
+            <div class="sinreg">
+    <h2>Service request details</h2>
+            <form action="/admin/jobmodify/{{details.id}} " method="POST">
+                <label>Request ID:</label>
+                <input type="text" name="id" value="{{details.id}}" disabled /> <br>
+                <label>Service name:</label>
+                <input type="text" name="uid" value="{{details.ss.sname}}" disabled /> <br>
+                <label>Customer name:</label>
+                <input type="text" name="uid" value="{{details.cust.name}}" disabled /> <br>
+                <label>All vailable professional:</label>
+                <select name="pro" id="" required>
+                    {% for p in allpro %}
+                    <option value="{{p["id"]}}">{{p["name"]}}</option>
+                    {% endfor %}
+                </select> <br>
+                <label>Request date:</label>
+                <input type="text" name="uid" value="{{details.date_of_request}}" disabled /> <br>
+                <label>Request status:</label>
+                <input type="text" name="uid" value="{{details.service_status}}" disabled /> <br>
+
+
+                <input type="submit" name="act" id="" value="Update">
+                <a class="btn btn-danger m-1" href="/admin/home">Back</a>
+
+            </form>
+
+        </div>
+
+
 
             {% endif %}
 
