@@ -113,6 +113,7 @@
         <table>
             <tr>
                 <th>ID</th>
+                <th>Service name</th>
                 <th>Assigned Professional</th>
                 <th>Requesting customer</th>
                 <th>Requested Dt</th>
@@ -121,8 +122,9 @@
             {% for r in all_request | sort(attribute='date_of_request', reverse = True) %}
             <tr>
                 <td>{{r.id}}</td>
+                <td>{{r.ss.sname}}</td>
                 {% if not r.pro.name %}
-                <td><a class="btn btn-info" href="/admin/jobdetails/{{r.id}}">Assign new pro</a> </td>
+                <td><a class="btn btn-info" href="/admin/jobdetails/{{r.rservice_id}}">Assign new pro</a> </td>
                 {% else %}
                 <td>{{r.pro.name}} </td>
 
@@ -278,13 +280,13 @@
 
             <div class="sinreg">
     <h2>Service request details</h2>
-            <form action="/admin/jobmodify/{{details.id}} " method="POST">
+            <form action="/admin/jobmodify/{{details.rservice_id}} " method="POST">
                 <label>Request ID:</label>
-                <input type="text" name="id" value="{{details.id}}" disabled /> <br>
+                <input type="text" name="" value="{{details.id}}" disabled /> <br>
                 <label>Service name:</label>
-                <input type="text" name="uid" value="{{details.ss.sname}}" disabled /> <br>
+                <input type="text" name="" value="{{details.ss.sname}}" disabled /> <br>
                 <label>Customer name:</label>
-                <input type="text" name="uid" value="{{details.cust.name}}" disabled /> <br>
+                <input type="text" name="" value="{{details.cust.name}}" disabled /> <br>
                 <label>All vailable professional:</label>
                 <select name="pro" id="" required>
                     {% for p in allpro %}
@@ -292,9 +294,9 @@
                     {% endfor %}
                 </select> <br>
                 <label>Request date:</label>
-                <input type="text" name="uid" value="{{details.date_of_request}}" disabled /> <br>
+                <input type="text" name="" value="{{details.date_of_request}}" disabled /> <br>
                 <label>Request status:</label>
-                <input type="text" name="uid" value="{{details.service_status}}" disabled /> <br>
+                <input type="text" name="" value="{{details.service_status}}" disabled /> <br>
 
 
                 <input type="submit" name="act" id="" value="Update">
